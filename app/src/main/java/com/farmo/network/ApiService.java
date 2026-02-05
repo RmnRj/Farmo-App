@@ -1,6 +1,5 @@
 package com.farmo.network;
 
-import com.farmo.network.Farmer.FarmerDashboardService;
 import com.farmo.network.auth.ForgotPasswordChangePasswordRequest;
 import com.farmo.network.auth.ForgotPasswordRequest;
 import com.farmo.network.auth.ForgotPasswordResponse;
@@ -49,5 +48,5 @@ public interface ApiService {
     Call<UserProfileResponse> getUserProfile(@Query("user_id") String userId);
 
     @POST("api/home/dashboard/")
-    Call<FarmerDashboardService.DashboardResponse> getDashboard(@Query("user_id") String userId);
+    Call<DashboardService.DashboardResponse> getDashboard(@Query("user_id") String userId);
 }

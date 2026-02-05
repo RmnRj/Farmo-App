@@ -1,8 +1,8 @@
-package com.farmo.network.Farmer;
+package com.farmo.network;
 
 import com.google.gson.annotations.SerializedName;
 
-public class FarmerDashboardService {
+public class DashboardService {
     public static class DashboardRequest{
 
     }

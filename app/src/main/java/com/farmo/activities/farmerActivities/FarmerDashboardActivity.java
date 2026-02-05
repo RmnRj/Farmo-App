@@ -13,7 +13,7 @@ import com.farmo.activities.OrdersActivity;
 import com.farmo.activities.ProfileActivity;
 import com.farmo.R;
 import com.farmo.activities.ReviewsActivity;
-import com.farmo.network.Farmer.FarmerDashboardService;
+import com.farmo.network.DashboardService;
 import com.farmo.network.RetrofitClient;
 import com.farmo.utils.SessionManager;
 
@@ -115,12 +115,12 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         String userId = sessionManager.getUserId();
         if (userId == null || userId.isEmpty()) return;
 
-        RetrofitClient.getApiService(this).getDashboard(userId).enqueue(new Callback<FarmerDashboardService.DashboardResponse>() {
+        RetrofitClient.getApiService(this).getDashboard(userId).enqueue(new Callback<DashboardService.DashboardResponse>() {
             @Override
-            public void onResponse(Call<FarmerDashboardService.DashboardResponse> call,
-                                   Response<FarmerDashboardService.DashboardResponse> response) {
+            public void onResponse(Call<DashboardService.DashboardResponse> call,
+                                   Response<DashboardService.DashboardResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    FarmerDashboardService.DashboardResponse data = response.body();
+                    DashboardService.DashboardResponse data = response.body();
 
                     // Save values safely
                     fullName = data.getUsername() != null ? data.getUsername() : "User";
@@ -134,7 +134,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<FarmerDashboardService.DashboardResponse> call, Throwable t) {
+            public void onFailure(Call<DashboardService.DashboardResponse> call, Throwable t) {
                 Toast.makeText(FarmerDashboardActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -159,7 +159,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         tvGreeting.setText(String.format("%s, %s", greeting, fullName));
     }
 
-    private void refreshWalletUI(FarmerDashboardService.DashboardResponse data) {
+    private void refreshWalletUI(DashboardService.DashboardResponse data) {
         TextView tvTodaysLabel = findViewById(R.id.tvTodaysSalesLabel);
         TextView tvWalletBalance = findViewById(R.id.tvWalletBalance);
         TextView tvSalesAmount = findViewById(R.id.tvSalesAmount);

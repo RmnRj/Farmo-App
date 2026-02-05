@@ -7,21 +7,12 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.farmo.R;
 import com.farmo.activities.ProfileActivity;
-import com.farmo.network.Farmer.FarmerDashboardService;
-import com.farmo.network.RetrofitClient;
 import com.farmo.utils.SessionManager;
-
-import java.util.Calendar;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ConsumerDashboardActivity extends AppCompatActivity {
 
@@ -107,9 +98,9 @@ public class ConsumerDashboardActivity extends AppCompatActivity {
         String userId = sessionManager.getUserId();
         if (userId == null || userId.isEmpty()) return;
 
-//        RetrofitClient.getApiService(this).getDashboard(userId).enqueue(new Callback<FarmerDashboardService.DashboardResponse>() {
+//        RetrofitClient.getApiService(this).getDashboard(userId).enqueue(new Callback<DashboardService.DashboardResponse>() {
 //            @Override
-//            public void onResponse(Call<FarmerDashboardService.DashboardResponse> call, Response<DashboardResponse> response) {
+//            public void onResponse(Call<DashboardService.DashboardResponse> call, Response<DashboardResponse> response) {
 //                if (response.isSuccessful() && response.body() != null) {
 //                    DashboardResponse data = response.body();
 //                    walletBalance = data.getWalletAmt();
