@@ -3,7 +3,9 @@ package com.farmo.activities.farmerActivities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import com.farmo.activities.OrdersActivity;
 import com.farmo.activities.ProfileActivity;
 import com.farmo.R;
 import com.farmo.activities.ReviewsActivity;
+import com.farmo.activities.wallet.WalletActivity;
 import com.farmo.network.DashboardService;
 import com.farmo.network.RetrofitClient;
 import com.farmo.utils.SessionManager;
@@ -40,6 +43,8 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         return walletBalance;
     }
 
+    RelativeLayout walletArea = findViewById(R.id.Walletbox);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         userType = sessionManager.getUserType();
 
         fetchDashboardData();
+        changeToWalletActivity();
         setupUI();
     }
 
@@ -57,6 +63,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         TextView tvWalletBalance = findViewById(R.id.tvWalletBalance);
         TextView btnProfile = findViewById(R.id.btnProfile);
         TextView tvSalesAmount = findViewById(R.id.tvSalesAmount);
+
 
         // Visibility Toggle
         ivVisibility.setOnClickListener(v -> {
@@ -168,5 +175,17 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         tvTodaysLabel.setText(label);
         tvWalletBalance.setText(String.format("NRs. %s", get_walletBalance()));
         tvSalesAmount.setText(String.format("NRs. %s", todaySales));
+    }
+
+    private void changeToWalletActivity(){
+        walletArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to switch activities
+                Intent intent = new Intent(FarmerDashboardActivity.this, WalletActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

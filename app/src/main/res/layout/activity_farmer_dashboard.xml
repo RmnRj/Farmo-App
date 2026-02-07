@@ -103,6 +103,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+                    android:id="@+id/Walletbox"
                     android:layout_height="wrap_content"
                     android:padding="16dp">
 
@@ -119,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvWalletLabel"
-                        android:text=""
+                        android:text="*****"
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -156,7 +157,7 @@
                         android:layout_below="@id/divider"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="16dp"
-                        android:text=""
+                        android:text="***"
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
 
