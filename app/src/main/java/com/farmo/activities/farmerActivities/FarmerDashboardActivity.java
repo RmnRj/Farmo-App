@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.farmo.activities.OrdersActivity;
 import com.farmo.activities.ProfileActivity;
@@ -32,25 +33,19 @@ import retrofit2.Response;
 public class FarmerDashboardActivity extends AppCompatActivity {
 
     private boolean isBalanceVisible = true;
-    private String userType = "Farmer";
+    private String UserType;
     private String walletBalance = "0.00";
     private String fullName = "UserName";
     private String todaySales = "0.00";
 
     private SessionManager sessionManager;
-
-    private void set_walletBalance(String walletBalance) {
-        this.walletBalance = walletBalance;
-    }
-    private String get_walletBalance() {
-        return walletBalance;
-    }
-
-    private RelativeLayout walletArea ;
-
+    private RelativeLayout walletArea;
     private TextView tvSalesAmount, tvWalletBalance;
-
     private ImageView RefreshWalletbyImage;
+    private EditText DashboardSearch;
+
+    // ADD SwipeRefreshLayout
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +53,37 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_farmer_dashboard);
 
         sessionManager = new SessionManager(this);
-        userType = sessionManager.getUserType();
+        UserType = sessionManager.getUserType();
+
         setupUI();
-
-
+        setupSwipeRefresh(); // ADD this
         fetchDashboardData();
+    }
 
+    // ADD this method
+    private void setupSwipeRefresh() {
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
+        // Use your existing colors
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.topical_forest,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_blue_dark,
+                android.R.color.holo_orange_dark
+        );
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshDashboard();
+            }
+        });
+    }
+
+    // ADD this method
+    private void refreshDashboard() {
+        // Refresh both dashboard and wallet data
+        fetchDashboardData();
     }
 
     private void setupUI() {
@@ -74,7 +93,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         tvSalesAmount = findViewById(R.id.tvSalesAmount);
         walletArea = findViewById(R.id.Walletbox);
         RefreshWalletbyImage = findViewById(R.id.ivRefresh);
-
+        DashboardSearch = findViewById(R.id.dashboard_search);
 
         // Visibility Toggle
         ivVisibility.setOnClickListener(v -> {
@@ -83,7 +102,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                 tvSalesAmount.setText("*****");
                 ivVisibility.setImageResource(R.drawable.ic_visibility_off);
             } else {
-                tvWalletBalance.setText(String.format("NRs. %s", get_walletBalance()));
+                tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
                 tvSalesAmount.setText(String.format("NRs. %s", todaySales));
                 ivVisibility.setImageResource(R.drawable.ic_visibility);
             }
@@ -128,51 +147,66 @@ public class FarmerDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        walletArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an Intent to switch activities
-                Intent intent = new Intent(FarmerDashboardActivity.this, WalletActivity.class);
-                startActivity(intent);
-                finish();
-            }
+        walletArea.setOnClickListener(v -> {
+            Intent intent = new Intent(FarmerDashboardActivity.this, WalletActivity.class);
+            startActivity(intent);
         });
 
-        RefreshWalletbyImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshWalletUI();
-            }
+        RefreshWalletbyImage.setOnClickListener(v -> {
+            refreshWalletUI();
+        });
+
+        DashboardSearch.setOnClickListener(v -> {
+            // Add search functionality
         });
     }
 
     private void fetchDashboardData() {
-
         RetrofitClient.getApiService(this).getDashboard().enqueue(new Callback<DashboardService.DashboardResponse>() {
             @Override
             public void onResponse(Call<DashboardService.DashboardResponse> call,
                                    Response<DashboardService.DashboardResponse> response) {
+
+                // STOP refresh animation
+                if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
                 if (response.isSuccessful() && response.body() != null) {
                     DashboardService.DashboardResponse data = response.body();
 
                     // Save values safely
                     fullName = data.getUsername() != null ? data.getUsername() : "User";
-                    set_walletBalance(data.getWallet_amt() != null ? data.getWallet_amt() : "0.00");
+                    walletBalance = data.getWallet_amt() != null ? data.getWallet_amt() : "0.00";
                     todaySales = data.getTodayIncome() != null ? data.getTodayIncome() : "0.00";
 
-                    // Update UI on main thread - REMOVED refreshWalletUI()
+                    // Update UI on main thread
                     runOnUiThread(() -> {
                         updateGreeting(fullName);
-                        // Update wallet display directly
                         tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
                         tvSalesAmount.setText(String.format("NRs. %s", todaySales));
                     });
+
+                    // Show success message only on manual refresh
+                    if (swipeRefreshLayout != null) {
+                        Toast.makeText(FarmerDashboardActivity.this,
+                                "Dashboard refreshed", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(FarmerDashboardActivity.this,
+                            "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DashboardService.DashboardResponse> call, Throwable t) {
-                Toast.makeText(FarmerDashboardActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                // STOP refresh animation
+                if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                Toast.makeText(FarmerDashboardActivity.this,
+                        "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -191,7 +225,6 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         } else {
             greeting = "Good Night";
         }
-        //greeting = greeting + ", " + name;
 
         TextView tvGreeting = findViewById(R.id.tvGreeting);
         tvGreeting.setText(String.format("%s, %s", greeting, name));
@@ -209,8 +242,8 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             String balance = data.getBalance() != null ? data.getBalance() : "0.00";
                             String todaysIncome = data.getTodaysIncome() != null ? data.getTodaysIncome() : "0.00";
 
-                            // Update local variables too!
-                            set_walletBalance(balance);
+                            // Update local variables
+                            walletBalance = balance;
                             todaySales = todaysIncome;
 
                             // Update UI
@@ -218,11 +251,9 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             tvSalesAmount.setText(String.format("NRs. %s", todaysIncome));
 
                             Toast.makeText(FarmerDashboardActivity.this,
-                                    "Wallet refreshed",
-                                    Toast.LENGTH_SHORT).show();
+                                    "Wallet refreshed", Toast.LENGTH_SHORT).show();
 
                         } else {
-                            // Parse error from response body
                             String errorMessage = "Failed to load wallet data";
 
                             if (response.errorBody() != null) {
@@ -240,19 +271,23 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             }
 
                             Toast.makeText(FarmerDashboardActivity.this,
-                                    errorMessage,
-                                    Toast.LENGTH_SHORT).show();
+                                    errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<RefreshWallet.refreshWalletResponse> call, Throwable t) {
                         Toast.makeText(FarmerDashboardActivity.this,
-                                "Network Error: " + t.getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                                "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void set_walletBalance(String walletBalance) {
+        this.walletBalance = walletBalance;
+    }
 
+    private String get_walletBalance() {
+        return walletBalance;
+    }
 }

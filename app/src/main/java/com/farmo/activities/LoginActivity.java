@@ -81,9 +81,11 @@ public class LoginActivity extends AppCompatActivity {
     private void performTokenLogin() {
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
+        String refreshToken = sessionManager.getRefreshToken(); // ADD THIS LINE
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
 
-        TokenLoginRequest request = new TokenLoginRequest(token, "", userId, false, deviceInfo);
+        // Pass the refresh token here
+        TokenLoginRequest request = new TokenLoginRequest(token, refreshToken, userId, false, deviceInfo);
 
         RetrofitClient.getApiService(this).loginWithToken(request).enqueue(new Callback<LoginResponse>() {
             @Override
@@ -108,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
+                sessionManager.clearSession(); // Clear invalid session
                 Toast.makeText(LoginActivity.this, "Auto-login failed. Check connection.", Toast.LENGTH_SHORT).show();
                 setContentView(R.layout.activity_login);
                 initViews();
