@@ -3,6 +3,7 @@ package com.farmo.activities.farmerActivities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,7 +13,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.core.widget.NestedScrollView;
 
+import com.farmo.activities.LoginActivity;
 import com.farmo.activities.OrdersActivity;
 import com.farmo.activities.ProfileActivity;
 import com.farmo.R;
@@ -32,6 +35,8 @@ import retrofit2.Response;
 
 public class FarmerDashboardActivity extends AppCompatActivity {
 
+    private static final String TAG = "FarmerDashboard";
+
     private boolean isBalanceVisible = true;
     private String UserType;
     private String walletBalance = "0.00";
@@ -44,8 +49,9 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     private ImageView RefreshWalletbyImage;
     private EditText DashboardSearch;
 
-    // ADD SwipeRefreshLayout
     private SwipeRefreshLayout swipeRefreshLayout;
+    private NestedScrollView nestedScrollView;
+    private boolean isManualRefresh = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +61,37 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         UserType = sessionManager.getUserType();
 
+        // Check if user is logged in
+        if (!sessionManager.isLoggedIn()) {
+            Log.e(TAG, "User not logged in - Session Check Failed!");
+            Log.d(TAG, "User Type: " + sessionManager.getUserType()); // Debugging
+
+            //Toast.makeText(this, "Debug: Session Invalid", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show();
+            // Redirect to login
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setupUI();
-        setupSwipeRefresh(); // ADD this
+        setupSwipeRefresh();
         fetchDashboardData();
     }
 
-    // ADD this method
     private void setupSwipeRefresh() {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
 
-        // Use your existing colors
+        // 1. Check if swipeRefreshLayout exists before using it
+        if (swipeRefreshLayout == null) {
+            Log.e(TAG, "ERROR: swipe_refresh ID not found in XML");
+            return; // Stop here to prevent crash
+        }
+
+        // 2. Find NestedScrollView from the Activity, not necessarily from swipeLayout
+        nestedScrollView = findViewById(R.id.nested_scroll_view);
+
         swipeRefreshLayout.setColorSchemeResources(
                 R.color.topical_forest,
                 android.R.color.holo_green_dark,
@@ -72,18 +99,20 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                 android.R.color.holo_orange_dark
         );
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshDashboard();
-            }
-        });
-    }
+        if (nestedScrollView != null) {
+            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                    swipeRefreshLayout.setEnabled(scrollY == 0);
+                }
+            });
+        }
 
-    // ADD this method
-    private void refreshDashboard() {
-        // Refresh both dashboard and wallet data
-        fetchDashboardData();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            Log.d(TAG, "Manual refresh triggered");
+            isManualRefresh = true;
+            fetchDashboardData();
+        });
     }
 
     private void setupUI() {
@@ -109,13 +138,11 @@ public class FarmerDashboardActivity extends AppCompatActivity {
             isBalanceVisible = !isBalanceVisible;
         });
 
-        // Navigation to Profile
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(FarmerDashboardActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 
-        // Quick Actions Grid
         findViewById(R.id.cardAddProduct).setOnClickListener(v -> {
             Intent intent = new Intent(FarmerDashboardActivity.this, AddProductActivity.class);
             startActivity(intent);
@@ -131,7 +158,6 @@ public class FarmerDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Stats Row
         findViewById(R.id.cardOrderAnalytics).setOnClickListener(v -> {
             Intent intent = new Intent(FarmerDashboardActivity.this, OrdersActivity.class);
             startActivity(intent);
@@ -162,18 +188,41 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     }
 
     private void fetchDashboardData() {
+        Log.d(TAG, "Fetching dashboard data...");
+
+        // Verify authentication before making request
+        if (!sessionManager.isLoggedIn()) {
+            Log.e(TAG, "User not authenticated");
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            isManualRefresh = false;
+            return;
+        }
+
+        // Show loading indicator if manual refresh
+        if (isManualRefresh && swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        // Make API call with authentication
         RetrofitClient.getApiService(this).getDashboard().enqueue(new Callback<DashboardService.DashboardResponse>() {
             @Override
             public void onResponse(Call<DashboardService.DashboardResponse> call,
                                    Response<DashboardService.DashboardResponse> response) {
 
-                // STOP refresh animation
-                if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                Log.d(TAG, "Dashboard API response code: " + response.code());
+
+                // Stop refresh animation
+                if (swipeRefreshLayout != null) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
                 if (response.isSuccessful() && response.body() != null) {
                     DashboardService.DashboardResponse data = response.body();
+
+                    Log.d(TAG, "Dashboard data received successfully");
 
                     // Save values safely
                     fullName = data.getUsername() != null ? data.getUsername() : "User";
@@ -183,30 +232,61 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                     // Update UI on main thread
                     runOnUiThread(() -> {
                         updateGreeting(fullName);
-                        tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
-                        tvSalesAmount.setText(String.format("NRs. %s", todaySales));
+
+                        if (isBalanceVisible) {
+                            tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
+                            tvSalesAmount.setText(String.format("NRs. %s", todaySales));
+                        }
                     });
 
-                    // Show success message only on manual refresh
-                    if (swipeRefreshLayout != null) {
+                    // Show success message ONLY on manual refresh
+                    if (isManualRefresh) {
                         Toast.makeText(FarmerDashboardActivity.this,
                                 "Dashboard refreshed", Toast.LENGTH_SHORT).show();
+                        isManualRefresh = false;
                     }
                 } else {
-                    Toast.makeText(FarmerDashboardActivity.this,
-                            "Failed to load dashboard data", Toast.LENGTH_SHORT).show();
+                    // Handle error response
+                    String errorMessage = "Failed to load dashboard data";
+
+                    if (response.code() == 401 || response.code() == 403) {
+                        errorMessage = "Session expired. Please login again.";
+                        sessionManager.clearSession();
+                        Log.e(TAG, "Authentication failed: " + response.code());
+                    } else if (response.errorBody() != null) {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "Error response: " + errorBody);
+
+                            DashboardService.DashboardResponse errorResponse =
+                                    new Gson().fromJson(errorBody, DashboardService.DashboardResponse.class);
+
+                            if (errorResponse != null && errorResponse.getError() != null) {
+                                errorMessage = errorResponse.getError();
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing error response", e);
+                        }
+                    }
+
+                    Toast.makeText(FarmerDashboardActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                    isManualRefresh = false;
                 }
             }
 
             @Override
             public void onFailure(Call<DashboardService.DashboardResponse> call, Throwable t) {
-                // STOP refresh animation
-                if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                Log.e(TAG, "Dashboard API call failed", t);
+
+                // Stop refresh animation
+                if (swipeRefreshLayout != null) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
                 Toast.makeText(FarmerDashboardActivity.this,
                         "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                isManualRefresh = false;
             }
         });
     }
@@ -231,11 +311,16 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     }
 
     private void refreshWalletUI() {
+        Log.d(TAG, "Refreshing wallet data...");
+
         RetrofitClient.getApiService(this).getRefreshWallet()
                 .enqueue(new Callback<RefreshWallet.refreshWalletResponse>() {
                     @Override
                     public void onResponse(Call<RefreshWallet.refreshWalletResponse> call,
                                            Response<RefreshWallet.refreshWalletResponse> response) {
+
+                        Log.d(TAG, "Wallet refresh response code: " + response.code());
+
                         if (response.isSuccessful() && response.body() != null) {
                             RefreshWallet.refreshWalletResponse data = response.body();
 
@@ -246,9 +331,11 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             walletBalance = balance;
                             todaySales = todaysIncome;
 
-                            // Update UI
-                            tvWalletBalance.setText(String.format("NRs. %s", balance));
-                            tvSalesAmount.setText(String.format("NRs. %s", todaysIncome));
+                            // Update UI only if balance is visible
+                            if (isBalanceVisible) {
+                                tvWalletBalance.setText(String.format("NRs. %s", balance));
+                                tvSalesAmount.setText(String.format("NRs. %s", todaysIncome));
+                            }
 
                             Toast.makeText(FarmerDashboardActivity.this,
                                     "Wallet refreshed", Toast.LENGTH_SHORT).show();
@@ -259,6 +346,8 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             if (response.errorBody() != null) {
                                 try {
                                     String errorBody = response.errorBody().string();
+                                    Log.e(TAG, "Wallet error response: " + errorBody);
+
                                     RefreshWallet.refreshWalletResponse errorResponse =
                                             new Gson().fromJson(errorBody, RefreshWallet.refreshWalletResponse.class);
 
@@ -266,6 +355,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                                         errorMessage = errorResponse.getError();
                                     }
                                 } catch (Exception e) {
+                                    Log.e(TAG, "Error parsing wallet error", e);
                                     errorMessage = "Error: " + response.code();
                                 }
                             }
@@ -277,17 +367,19 @@ public class FarmerDashboardActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<RefreshWallet.refreshWalletResponse> call, Throwable t) {
+                        Log.e(TAG, "Wallet refresh failed", t);
                         Toast.makeText(FarmerDashboardActivity.this,
                                 "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void set_walletBalance(String walletBalance) {
-        this.walletBalance = walletBalance;
-    }
-
-    private String get_walletBalance() {
-        return walletBalance;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh dashboard when returning to this activity
+        if (sessionManager.isLoggedIn()) {
+            fetchDashboardData();
+        }
     }
 }

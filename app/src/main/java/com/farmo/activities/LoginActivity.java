@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                             loginResponse.getUserType(),
                             loginResponse.getToken(),
                             loginResponse.getRefreshToken(),
-                            rememberMe
+                            true
                     );
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else if (response.errorBody() != null) {
