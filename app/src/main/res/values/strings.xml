@@ -99,4 +99,5 @@
     <string name="please_change_your_temporary_password_to_activate_your_account">Please change your temporary password to activate your account.</string>
     <string name="current_password">Current Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
+    <string name="wallet">Wallet</string>
 </resources>
