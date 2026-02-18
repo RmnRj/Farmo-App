@@ -4,9 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.farmo.activities.consumerActivities.ConsumerDashboardActivity;
 import com.farmo.activities.farmerActivities.FarmerDashboardActivity;
 import com.farmo.R;
-import com.farmo.network.ApiService;
 import com.farmo.network.auth.LoginRequest;
 import com.farmo.network.auth.LoginResponse;
 import com.farmo.network.RetrofitClient;
 import com.farmo.network.auth.TokenLoginRequest;
 import com.farmo.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
@@ -34,205 +31,186 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText etUsername, etPassword;
-    private CheckBox cbRememberMe;
+    private MaterialButton loginButton;
     private ProgressDialog progressDialog;
     private SessionManager sessionManager;
-
-    Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
+        // 1. Initialize session manager
         sessionManager = new SessionManager(this);
-        
-        // Auto-login if session exists
-        if (sessionManager.isLoggedIn()) {
-            performTokenLogin();
-            return; // Exit early to avoid showing login UI briefly
-        }
-        
+
+        // 2. Set Content View first to inflate the layout
         setContentView(R.layout.activity_login);
 
-        etUsername = findViewById(R.id.et_username);
-        etPassword = findViewById(R.id.et_password);
-        cbRememberMe = findViewById(R.id.cb_remember_me);
+        // 3. Initialize Views
+        initViews();
 
-        loginButton = findViewById(R.id.btn_login);
-        loginButton.setEnabled(true); // Enable the button
-        loginButton.setAlpha(1.0f); // Set the alpha to 1.0 (fully opaque)
-
-        TextView forgotPassword = findViewById(R.id.tv_forgot_password);
-        TextView signUp = findViewById(R.id.tv_signup);
-
+        // 4. Setup Progress Dialog for manual login
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logging in...");
         progressDialog.setCancelable(false);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performLogin();
-            }
-        });
+        // 5. AUTO-LOGIN: If a session exists in SharedPreferences, try to login automatically
+        if (sessionManager.isLoggedIn()) {
+            performTokenLogin();
+        }
+    }
+
+    private void initViews() {
+        etUsername = findViewById(R.id.et_username);
+        etPassword = findViewById(R.id.et_password);
+        loginButton = findViewById(R.id.btn_login);
+
+        TextView forgotPassword = findViewById(R.id.tv_forgot_password);
+        TextView signUp = findViewById(R.id.tv_signup);
+
+        loginButton.setOnClickListener(v -> performLogin());
 
         forgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, FP_IdentifyUserActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(LoginActivity.this, FP_IdentifyUserActivity.class));
         });
 
         signUp.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
         });
     }
 
+    /**
+     * Attempts to log in using existing tokens (Auto-login)
+     */
     private void performTokenLogin() {
-        loginButton.setEnabled(false); // Disable the button
-        loginButton.setAlpha(0.5f); // Set the alpha to 0.5 (50% opacity)
+        setLoadingState(true);
 
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
-        String refreshToken = sessionManager.getRefreshToken(); // ADD THIS LINE
+        String refreshToken = sessionManager.getRefreshToken();
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
 
-        // Pass the refresh token here
         TokenLoginRequest request = new TokenLoginRequest(token, refreshToken, userId, deviceInfo);
 
         RetrofitClient.getApiService(this).loginWithToken(request).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
-                    sessionManager.saveSession(
-                            loginResponse.getUserId(),
-                            loginResponse.getUserType(),
-                            loginResponse.getToken(),
-                            loginResponse.getRefreshToken(),
-                            true
-                    );
-                    goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
+                    // Success: Server validated the old token, go to dashboard
+                    handleLoginSuccess(response.body());
                 } else {
-                    loginButton.setEnabled(true);
-                    loginButton.setAlpha(1.0f);
-
+                    // Failure: Token is invalid/expired. Clear session and stay on Login screen.
+                    setLoadingState(false);
                     sessionManager.clearSession();
-                    // Re-show login UI
-                    Toast.makeText(LoginActivity.this, "Auto-login failed. Check connection.", Toast.LENGTH_SHORT).show();
-                    setContentView(R.layout.activity_login);
-                    initViews();
+                    Toast.makeText(LoginActivity.this, "Session expired. Please login.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                loginButton.setEnabled(true);
-                loginButton.setAlpha(1.0f);
-
-                sessionManager.clearSession(); // Clear invalid session
-                Toast.makeText(LoginActivity.this, "Auto-login failed. Check connection.", Toast.LENGTH_SHORT).show();
-                setContentView(R.layout.activity_login);
-                initViews();
+                setLoadingState(false);
+                // On network error, we don't clear the session (allow retry later)
+                Toast.makeText(LoginActivity.this, "Network Error. Check connection.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void initViews() {
-        etUsername = findViewById(R.id.et_username);
-        etPassword = findViewById(R.id.et_password);
-        cbRememberMe = findViewById(R.id.cb_remember_me);
-        findViewById(R.id.btn_login).setOnClickListener(v -> performLogin());
-        findViewById(R.id.tv_forgot_password).setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, FP_IdentifyUserActivity.class);
-            startActivity(intent);
-        });
-        findViewById(R.id.tv_signup).setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-            startActivity(intent);
-        });
-    }
-
+    /**
+     * Manual login process when user enters username and password
+     */
     private void performLogin() {
-        loginButton.setEnabled(false);
-        loginButton.setAlpha(0.5f);
-
         String identifier = Objects.requireNonNull(etUsername.getText()).toString().trim();
         String password = Objects.requireNonNull(etPassword.getText()).toString().trim();
-        boolean rememberMe = cbRememberMe.isChecked();
 
         if (identifier.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter credentials", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        setLoadingState(true);
         progressDialog.show();
 
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
-        LoginRequest loginRequest = new LoginRequest(identifier, password, false, deviceInfo);
+        // Third parameter 'true' signals persistent session to the backend
+        LoginRequest loginRequest = new LoginRequest(identifier, password, true, deviceInfo);
 
-        ApiService apiService = RetrofitClient.getApiService(this);
-        apiService.login(loginRequest).enqueue(new Callback<LoginResponse>() {
+        RetrofitClient.getApiService(this).login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
-                    sessionManager.saveSession(
-                            loginResponse.getUserId(),
-                            loginResponse.getUserType(),
-                            loginResponse.getToken(),
-                            loginResponse.getRefreshToken(),
-                            true
-                    );
-                    goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
-                } else if (response.errorBody() != null) {
-                    loginButton.setEnabled(true);
-                    loginButton.setAlpha(1.0f);
-                    try {
-                        String errorBody = response.errorBody().string();
-                        LoginResponse errorResponse = new Gson().fromJson(errorBody, LoginResponse.class);
-                        if (response.code() == 403 && errorResponse != null && "ACCOUNT_PENDING".equals(errorResponse.getErrorCode())) {
-                            Intent intent = new Intent(LoginActivity.this, Login_ActivateAccountActivity.class);
-                            intent.putExtra("USER_ID", identifier);
-                            intent.putExtra("CURRENT_PASSWORD", password);
-                            startActivity(intent);
-                        } else {
-                            String msg = (errorResponse != null && errorResponse.getError() != null) ? errorResponse.getError() : "Error: " + response.code();
-                            Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        Toast.makeText(LoginActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
+                    handleLoginSuccess(response.body());
+                } else {
+                    setLoadingState(false);
+                    handleLoginError(response, identifier, password);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                loginButton.setEnabled(true);
-                loginButton.setAlpha(1.0f);
                 progressDialog.dismiss();
+                setLoadingState(false);
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void handleLoginSuccess(LoginResponse loginResponse) {
+        // ALWAYS save the session to SharedPreferences for permanent login
+        sessionManager.saveSession(
+                loginResponse.getUserId(),
+                loginResponse.getUserType(),
+                loginResponse.getToken(),
+                loginResponse.getRefreshToken(),
+                true
+        );
+        goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
+    }
+
+    private void handleLoginError(Response<LoginResponse> response, String identifier, String password) {
+        if (response.errorBody() != null) {
+            try {
+                String errorBody = response.errorBody().string();
+                LoginResponse errorResponse = new Gson().fromJson(errorBody, LoginResponse.class);
+
+                if (response.code() == 403 && errorResponse != null && "ACCOUNT_PENDING".equals(errorResponse.getErrorCode())) {
+                    Intent intent = new Intent(LoginActivity.this, Login_ActivateAccountActivity.class);
+                    intent.putExtra("USER_ID", identifier);
+                    intent.putExtra("CURRENT_PASSWORD", password);
+                    startActivity(intent);
+                } else {
+                    String msg = (errorResponse != null && errorResponse.getError() != null) ? errorResponse.getError() : "Invalid credentials";
+                    Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                Toast.makeText(LoginActivity.this, "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void setLoadingState(boolean isLoading) {
+        if (loginButton != null) {
+            loginButton.setEnabled(!isLoading);
+            loginButton.setAlpha(isLoading ? 0.5f : 1.0f);
+        }
+    }
+
     private void goToDashboard(String userId, String userType) {
-        if(userType.equalsIgnoreCase("farmer") || userType.equalsIgnoreCase("verifiedfarmer")){
-            Intent intent = new Intent(LoginActivity.this, FarmerDashboardActivity.class);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("USER_TYPE", userType);
-            startActivity(intent);
-            finish();
+        Intent intent;
+        if (userType.equalsIgnoreCase("farmer") || userType.equalsIgnoreCase("verifiedfarmer")) {
+            intent = new Intent(LoginActivity.this, FarmerDashboardActivity.class);
+        } else if (userType.equalsIgnoreCase("consumer") || userType.equalsIgnoreCase("verifiedconsumer")) {
+            intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
+        } else {
+            Toast.makeText(this, "Invalid user type", Toast.LENGTH_SHORT).show();
+            return;
         }
-        else if (userType.equalsIgnoreCase("consumer") || userType.equalsIgnoreCase("verifiedconsumer")) {
-            Intent intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("USER_TYPE", userType);
-            startActivity(intent);
-            finish();
-        }
-        else {
-            Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
-        }
+
+        intent.putExtra("USER_ID", userId);
+        intent.putExtra("USER_TYPE", userType);
+
+        // Clear activity stack so user cannot go back to login screen
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

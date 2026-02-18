@@ -113,15 +113,22 @@ public class ProfileActivity extends AppCompatActivity {
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             if (decodedByte != null) {
                                 ivProfileImage.setImageBitmap(decodedByte);
+                            } else {
+                                // Decoding failed
+                                ivProfileImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pp__placeholder));
                             }
                         } catch (Exception e) {
-                            // Keep default/placeholder image
+                            // Base64 decode error
                             ivProfileImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pp__placeholder));
                         }
+                    } else {
+                        // No file data
+                        ivProfileImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pp__placeholder));
                     }
-                }
-                ivProfileImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pp__placeholder));
-                // If failed or no image, keep the default/placeholder image
+                } else {
+                    // Response not successful
+                    ivProfileImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pp__placeholder));
+                }// If failed or no image, keep the default/placeholder image
             }
 
             @Override
