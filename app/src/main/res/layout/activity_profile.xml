@@ -3,67 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_topical_forest"
+    android:background="#F5F5F5"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_header_bg"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:gravity="center_vertical">
-
-        <LinearLayout
+        android:layout_height="60dp"
+        android:background="@color/topical_forest"
+        android:paddingHorizontal="16dp">
+        <ImageView
             android:id="@+id/btnBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@color/white"/>
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_back_arrow"
-                app:tint="#FFFFFF" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Back"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_centerInParent="true"
             android:text="My Profile"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <View
-            android:layout_width="40dp"
-            android:layout_height="1dp" />
-    </LinearLayout>
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+    </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -74,56 +47,97 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
                     android:padding="20dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="50dp">
+                        <ImageView
+                            android:id="@+id/ivProfileImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/pp_placeholder" />
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:id="@+id/tvProfileName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_marginTop="12dp"
                         android:text="Loading..."
-                        android:textColor="@color/topical_forest"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"/>
 
                     <TextView
                         android:id="@+id/tvProfileUserType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="4dp"
                         android:text="User Type"
-                        android:textColor="#757575" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="20dp"
-                        android:background="#EEEEEE" />
-
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemUserId" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemPhone" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemEmail" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemSex" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemDob" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemAddress" />
-
+                        android:textColor="@color/topical_forest"
+                        android:textStyle="bold"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <com.google.android.material.button.MaterialButton
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemEmail" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemPhone" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemAddress" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemSex" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemDob" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemWhatsapp" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemFacebook" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About Me"
+                        android:textStyle="bold"
+                        android:textColor="@color/topical_forest"/>
+                    <TextView
+                        android:id="@+id/tvAbout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="User bio goes here..."/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="20dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#D32F2F"
                 android:text="Logout"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                app:backgroundTint="#D32F2F"
-                app:cornerRadius="12dp" />
+                android:textColor="@color/white"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

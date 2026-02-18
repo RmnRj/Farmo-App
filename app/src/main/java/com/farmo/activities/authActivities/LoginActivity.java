@@ -1,4 +1,4 @@
-package com.farmo.activities;
+package com.farmo.activities.authActivities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.farmo.activities.consumerActivities.ConsumerDashboardActivity;
@@ -24,6 +25,8 @@ import com.farmo.utils.SessionManager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
+import java.util.Objects;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     private CheckBox cbRememberMe;
     private ProgressDialog progressDialog;
     private SessionManager sessionManager;
+
+    Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,11 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.et_username);
         etPassword = findViewById(R.id.et_password);
         cbRememberMe = findViewById(R.id.cb_remember_me);
-        Button loginButton = findViewById(R.id.btn_login);
+
+        loginButton = findViewById(R.id.btn_login);
+        loginButton.setEnabled(true); // Enable the button
+        loginButton.setAlpha(1.0f); // Set the alpha to 1.0 (fully opaque)
+
         TextView forgotPassword = findViewById(R.id.tv_forgot_password);
         TextView signUp = findViewById(R.id.tv_signup);
 
@@ -68,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         forgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, IdentifyUserActivity.class);
+            Intent intent = new Intent(LoginActivity.this, FP_IdentifyUserActivity.class);
             startActivity(intent);
         });
 
@@ -79,17 +88,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performTokenLogin() {
+        loginButton.setEnabled(false); // Disable the button
+        loginButton.setAlpha(0.5f); // Set the alpha to 0.5 (50% opacity)
+
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
         String refreshToken = sessionManager.getRefreshToken(); // ADD THIS LINE
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
 
         // Pass the refresh token here
-        TokenLoginRequest request = new TokenLoginRequest(token, refreshToken, userId, false, deviceInfo);
+        TokenLoginRequest request = new TokenLoginRequest(token, refreshToken, userId, deviceInfo);
 
         RetrofitClient.getApiService(this).loginWithToken(request).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     sessionManager.saveSession(
@@ -101,15 +113,22 @@ public class LoginActivity extends AppCompatActivity {
                     );
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else {
+                    loginButton.setEnabled(true);
+                    loginButton.setAlpha(1.0f);
+
                     sessionManager.clearSession();
                     // Re-show login UI
+                    Toast.makeText(LoginActivity.this, "Auto-login failed. Check connection.", Toast.LENGTH_SHORT).show();
                     setContentView(R.layout.activity_login);
                     initViews();
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                loginButton.setEnabled(true);
+                loginButton.setAlpha(1.0f);
+
                 sessionManager.clearSession(); // Clear invalid session
                 Toast.makeText(LoginActivity.this, "Auto-login failed. Check connection.", Toast.LENGTH_SHORT).show();
                 setContentView(R.layout.activity_login);
@@ -124,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         cbRememberMe = findViewById(R.id.cb_remember_me);
         findViewById(R.id.btn_login).setOnClickListener(v -> performLogin());
         findViewById(R.id.tv_forgot_password).setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, IdentifyUserActivity.class);
+            Intent intent = new Intent(LoginActivity.this, FP_IdentifyUserActivity.class);
             startActivity(intent);
         });
         findViewById(R.id.tv_signup).setOnClickListener(v -> {
@@ -134,8 +153,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        String identifier = etUsername.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        loginButton.setEnabled(false);
+        loginButton.setAlpha(0.5f);
+
+        String identifier = Objects.requireNonNull(etUsername.getText()).toString().trim();
+        String password = Objects.requireNonNull(etPassword.getText()).toString().trim();
         boolean rememberMe = cbRememberMe.isChecked();
 
         if (identifier.isEmpty() || password.isEmpty()) {
@@ -151,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
         ApiService apiService = RetrofitClient.getApiService(this);
         apiService.login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
@@ -164,11 +186,13 @@ public class LoginActivity extends AppCompatActivity {
                     );
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else if (response.errorBody() != null) {
+                    loginButton.setEnabled(true);
+                    loginButton.setAlpha(1.0f);
                     try {
                         String errorBody = response.errorBody().string();
                         LoginResponse errorResponse = new Gson().fromJson(errorBody, LoginResponse.class);
                         if (response.code() == 403 && errorResponse != null && "ACCOUNT_PENDING".equals(errorResponse.getErrorCode())) {
-                            Intent intent = new Intent(LoginActivity.this, ActivateAccountActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, Login_ActivateAccountActivity.class);
                             intent.putExtra("USER_ID", identifier);
                             intent.putExtra("CURRENT_PASSWORD", password);
                             startActivity(intent);
@@ -183,7 +207,9 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                loginButton.setEnabled(true);
+                loginButton.setAlpha(1.0f);
                 progressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }

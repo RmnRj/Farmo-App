@@ -2,6 +2,7 @@ package com.farmo.network;
 
 import com.farmo.network.Dashboard.DashboardService;
 import com.farmo.network.Dashboard.RefreshWallet;
+import com.farmo.network.User.ProfileResponse;
 import com.farmo.network.auth.ForgotPasswordChangePasswordRequest;
 import com.farmo.network.auth.ForgotPasswordRequest;
 import com.farmo.network.auth.ForgotPasswordResponse;
@@ -14,8 +15,9 @@ import com.farmo.network.auth.VerifyOtpRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -26,6 +28,7 @@ public interface ApiService {
     Call<LoginResponse> loginWithToken(@Body TokenLoginRequest tokenLoginRequest);
 
     @POST("api/auth/register/")
+    @Headers("Content-Type: multipart/form-data")
     Call<MessageResponse> register(@Body RegisterRequest registerRequest);
 
     @POST("api/auth/forgot-password/")
@@ -44,14 +47,25 @@ public interface ApiService {
     Call<MessageResponse> activateAccount(@Body ForgotPasswordChangePasswordRequest.ActivateAccountRequest activateAccountRequest);
 
     @POST("api/auth/logout/")
-    Call<MessageResponse> logout();
+    @Headers("Content-Type: application/json")
+    Call<Void> logout(
+            @Header("token") String token,
+            @Header("user-id") String userId);
 
-    @POST("api/user/profile/")
-    Call<UserProfileResponse> getUserProfile(@Query("user_id") String userId);
+    @POST("api/user/view-profile/")
+    @Headers("Content-Type: multipart/form-data")
+    Call<ProfileResponse> getProfileData(
+            @Header("token") String token,
+            @Header("user-id") String userId);
 
     @POST("api/home/dashboard/")
-    Call<DashboardService.DashboardResponse> getDashboard();
+    Call<DashboardService.DashboardResponse> getDashboard(
+            @Header("token") String token,
+            @Header("user-id") String userId);
 
     @POST("api/home/refresh-wallet/")
-    Call<RefreshWallet.refreshWalletResponse> getRefreshWallet();
+    Call<RefreshWallet.refreshWalletResponse> getRefreshWallet(
+            @Header("token") String token,
+            @Header("user-id") String userId);
+
 }
