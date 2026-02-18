@@ -28,6 +28,15 @@
             android:textStyle="bold"/>
     </RelativeLayout>
 
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"/>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -38,6 +47,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Profile Header Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -77,17 +87,29 @@
                         android:id="@+id/tvProfileUserType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
                         android:text="User Type"
                         android:textColor="@color/topical_forest"
                         android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tvJoinDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Member since: ---"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="12sp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Contact Information Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -95,21 +117,59 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Information"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/topical_forest"
+                        android:layout_marginBottom="12dp"/>
+
                     <include layout="@layout/profile_info_item" android:id="@+id/itemEmail" />
                     <include layout="@layout/profile_info_item" android:id="@+id/itemPhone" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemAddress" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemSex" />
-                    <include layout="@layout/profile_info_item" android:id="@+id/itemDob" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemPhone2" />
                     <include layout="@layout/profile_info_item" android:id="@+id/itemWhatsapp" />
                     <include layout="@layout/profile_info_item" android:id="@+id/itemFacebook" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Personal Information Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp">
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Personal Information"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/topical_forest"
+                        android:layout_marginBottom="12dp"/>
+
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemSex" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemDob" />
+                    <include layout="@layout/profile_info_item" android:id="@+id/itemAddress" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- About Me Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -120,24 +180,29 @@
                         android:layout_height="wrap_content"
                         android:text="About Me"
                         android:textStyle="bold"
+                        android:textSize="16sp"
                         android:textColor="@color/topical_forest"/>
                     <TextView
                         android:id="@+id/tvAbout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="User bio goes here..."/>
+                        android:text="No info provided."
+                        android:textColor="@android:color/darker_gray"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Logout Button -->
             <Button
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="#D32F2F"
                 android:text="Logout"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -2,7 +2,8 @@ package com.farmo.network;
 
 import com.farmo.network.Dashboard.DashboardService;
 import com.farmo.network.Dashboard.RefreshWallet;
-import com.farmo.network.User.ProfileResponse;
+import com.farmo.network.User.ProfileServices;
+import com.farmo.network.User.ProfileServices;
 import com.farmo.network.auth.ForgotPasswordChangePasswordRequest;
 import com.farmo.network.auth.ForgotPasswordRequest;
 import com.farmo.network.auth.ForgotPasswordResponse;
@@ -12,6 +13,8 @@ import com.farmo.network.auth.RegisterRequest;
 import com.farmo.network.auth.TokenLoginRequest;
 import com.farmo.network.auth.VerifyEmailRequest;
 import com.farmo.network.auth.VerifyOtpRequest;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -53,10 +56,17 @@ public interface ApiService {
             @Header("user-id") String userId);
 
     @POST("api/user/view-profile/")
-    @Headers("Content-Type: multipart/form-data")
-    Call<ProfileResponse> getProfileData(
+    @Headers("Content-Type: application/json")
+    Call<ProfileServices.ProfileResponse> getProfileData(
             @Header("token") String token,
             @Header("user-id") String userId);
+
+    @POST("api/file/download")
+    Call<ProfileServices.FileDownloadResponse> downloadFile(
+            @Header("user-id") String userId,
+            @Header("token") String token,
+            @Body Map<String, Object> requestBody
+    );
 
     @POST("api/home/dashboard/")
     Call<DashboardService.DashboardResponse> getDashboard(
