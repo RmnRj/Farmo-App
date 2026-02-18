@@ -47,7 +47,7 @@
     <string name="good_evening">Good Evening</string>
     <string name="good_night">Good Night</string>
     <string name="UserProfile">P</string>
-    <string name="search">Search</string>
+    <string name="search_user">Search Farmer/Consumer</string>
     <string name="rest_of_dashboard_content_goes_here">Rest of dashboard...</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -85,4 +85,18 @@
     <string name="order_payment">Order Payment</string>
     <string name="npr">NPR</string>
 
+    <string name="refresh_wallet">Refresh Wallet</string>
+    <string name="add_product">Add Product</string>
+    <string name="add_nproduct">Add\nProduct</string>
+    <string name="astrix_balance">*****</string>
+    <string name="open_eye">Open Eye</string>
+    <string name="today_s_income">Today\'s Income:</string>
+    <string name="nearby_top_rated_farmers">Nearby Top Rated Farmers</string>
+    <string name="_5_km"><![CDATA[5 km >]]></string>
+    <string name="_5star">★★★★★</string>
+    <string name="userid">userid</string>
+    <string name="activate_account">Activate Account</string>
+    <string name="please_change_your_temporary_password_to_activate_your_account">Please change your temporary password to activate your account.</string>
+    <string name="current_password">Current Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
 </resources>

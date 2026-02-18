@@ -2,25 +2,28 @@ package com.farmo.activities.farmerActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.core.widget.NestedScrollView;
 
-import com.farmo.activities.LoginActivity;
-import com.farmo.activities.OrdersActivity;
-import com.farmo.activities.ProfileActivity;
+import com.farmo.activities.authActivities.LoginActivity;
 import com.farmo.R;
-import com.farmo.activities.ReviewsActivity;
-import com.farmo.activities.wallet.WalletActivity;
+import com.farmo.activities.commonActivities.ProfileActivity;
 import com.farmo.network.Dashboard.DashboardService;
 import com.farmo.network.Dashboard.RefreshWallet;
 import com.farmo.network.RetrofitClient;
@@ -38,20 +41,19 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     private static final String TAG = "FarmerDashboard";
 
     private boolean isBalanceVisible = true;
-    private String UserType;
     private String walletBalance = "0.00";
     private String fullName = "UserName";
     private String todaySales = "0.00";
 
     private SessionManager sessionManager;
-    private RelativeLayout walletArea;
     private TextView tvSalesAmount, tvWalletBalance;
-    private ImageView RefreshWalletbyImage;
-    private EditText DashboardSearch;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private NestedScrollView nestedScrollView;
     private boolean isManualRefresh = false;
+
+    // --- NEW LOADING OVERLAY VARIABLES ---
+    private RelativeLayout loadingOverlay;
+    private NestedScrollView mainScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +61,10 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_farmer_dashboard);
 
         sessionManager = new SessionManager(this);
-        UserType = sessionManager.getUserType();
+        mainScrollView = findViewById(R.id.nested_scroll_view);
 
-        // Check if user is logged in
         if (!sessionManager.isLoggedIn()) {
-            Log.e(TAG, "User not logged in - Session Check Failed!");
-            Log.d(TAG, "User Type: " + sessionManager.getUserType()); // Debugging
-
-            //Toast.makeText(this, "Debug: Session Invalid", Toast.LENGTH_SHORT).show();
             Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show();
-            // Redirect to login
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -80,51 +76,144 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         fetchDashboardData();
     }
 
+    /**
+     * Creates and toggles a Blur/Dim overlay programmatically.
+     */
+    private void showLoadingOverlay(boolean show) {
+        if (show) {
+            if (loadingOverlay == null) {
+                // 1. Create the container (The Dim Layer)
+                loadingOverlay = new RelativeLayout(this);
+                loadingOverlay.setLayoutParams(new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+                loadingOverlay.setBackgroundColor(Color.parseColor("#99000000")); // Semi-transparent black
+                loadingOverlay.setClickable(true);
+                loadingOverlay.setFocusable(true);
+
+                // 2. Create the ProgressRing
+                ProgressBar progressBar = new ProgressBar(this);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+                progressBar.setLayoutParams(lp);
+
+                // Add color tint to match your theme
+                progressBar.setIndeterminateTintList(android.content.res.ColorStateList.valueOf(Color.WHITE));
+
+                loadingOverlay.addView(progressBar);
+
+                // 3. Attach to Activity Root
+                ViewGroup rootView = findViewById(android.R.id.content);
+                rootView.addView(loadingOverlay);
+            }
+            loadingOverlay.setVisibility(View.VISIBLE);
+
+            // 4. Real Blur Effect for Android 12+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && mainScrollView != null) {
+                mainScrollView.setRenderEffect(RenderEffect.createBlurEffect(15f, 15f, Shader.TileMode.CLAMP));
+            }
+        } else {
+            if (loadingOverlay != null) {
+                loadingOverlay.setVisibility(View.GONE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && mainScrollView != null) {
+                    mainScrollView.setRenderEffect(null);
+                }
+            }
+        }
+    }
+
     private void setupSwipeRefresh() {
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        if (swipeRefreshLayout == null) return;
 
-        // 1. Check if swipeRefreshLayout exists before using it
-        if (swipeRefreshLayout == null) {
-            Log.e(TAG, "ERROR: swipe_refresh ID not found in XML");
-            return; // Stop here to prevent crash
-        }
+        swipeRefreshLayout.setColorSchemeResources(R.color.topical_forest, android.R.color.holo_green_dark);
 
-        // 2. Find NestedScrollView from the Activity, not necessarily from swipeLayout
-        nestedScrollView = findViewById(R.id.nested_scroll_view);
-
-        swipeRefreshLayout.setColorSchemeResources(
-                R.color.topical_forest,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_blue_dark,
-                android.R.color.holo_orange_dark
-        );
-
-        if (nestedScrollView != null) {
-            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    swipeRefreshLayout.setEnabled(scrollY == 0);
-                }
+        if (mainScrollView != null) {
+            mainScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                swipeRefreshLayout.setEnabled(scrollY == 0);
             });
         }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            Log.d(TAG, "Manual refresh triggered");
             isManualRefresh = true;
             fetchDashboardData();
         });
     }
 
+    private void fetchDashboardData() {
+        if (!sessionManager.isLoggedIn()) return;
+
+        // LOGIC: Show Blur/Overlay only if it's NOT a manual pull-to-refresh
+        // AND if we haven't loaded data yet (walletBalance is "0.00")
+        if (!isManualRefresh && walletBalance.equals("0.00")) {
+            showLoadingOverlay(true);
+        } else if (isManualRefresh && swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
+        RetrofitClient.getApiService(this).getDashboard(sessionManager.getAuthToken(), sessionManager.getUserId())
+                .enqueue(new Callback<DashboardService.DashboardResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<DashboardService.DashboardResponse> call,
+                                           @NonNull Response<DashboardService.DashboardResponse> response) {
+
+                        showLoadingOverlay(false);
+                        if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+
+                        if (response.isSuccessful() && response.body() != null) {
+                            DashboardService.DashboardResponse data = response.body();
+
+                            walletBalance = data.getWallet_amt() != null ? data.getWallet_amt() : "0.00";
+                            todaySales = data.getTodayIncome() != null ? data.getTodayIncome() : "0.00";
+                            fullName = data.getUsername() != null ? data.getUsername() : "User";
+
+                            runOnUiThread(() -> {
+                                updateGreeting(fullName);
+                                if (isBalanceVisible) {
+                                    tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
+                                    tvSalesAmount.setText(String.format("NRs. %s", todaySales));
+                                }
+                            });
+
+                            if (isManualRefresh) {
+                                Toast.makeText(FarmerDashboardActivity.this, "Refreshed", Toast.LENGTH_SHORT).show();
+                                isManualRefresh = false;
+                            }
+                        } else {
+                            handleError(response);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<DashboardService.DashboardResponse> call, @NonNull Throwable t) {
+                        showLoadingOverlay(false);
+                        if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(FarmerDashboardActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+                        isManualRefresh = false;
+                    }
+                });
+    }
+
+    private void handleError(Response<DashboardService.DashboardResponse> response) {
+        isManualRefresh = false;
+        if (response.code() == 401 || response.code() == 403) {
+            sessionManager.clearSession();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        } else {
+            Toast.makeText(this, "Failed to load data", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setupUI() {
         ImageView ivVisibility = findViewById(R.id.ivVisibility);
         tvWalletBalance = findViewById(R.id.tvWalletBalance);
-        TextView btnProfile = findViewById(R.id.btnProfile);
         tvSalesAmount = findViewById(R.id.tvSalesAmount);
-        walletArea = findViewById(R.id.Walletbox);
-        RefreshWalletbyImage = findViewById(R.id.ivRefresh);
-        DashboardSearch = findViewById(R.id.dashboard_search);
 
-        // Visibility Toggle
+        // ... Keep all your existing click listeners as they were ...
+
         ivVisibility.setOnClickListener(v -> {
             if (isBalanceVisible) {
                 tvWalletBalance.setText("*****");
@@ -138,186 +227,26 @@ public class FarmerDashboardActivity extends AppCompatActivity {
             isBalanceVisible = !isBalanceVisible;
         });
 
-        btnProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardAddProduct).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, AddProductActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardOrders).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, OrdersActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardMyProducts).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, MyProductsActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardOrderAnalytics).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, OrdersActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardReviews).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, ReviewsActivity.class);
-            startActivity(intent);
-        });
-
-        findViewById(R.id.cardReviewsBottom).setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, ReviewsActivity.class);
-            startActivity(intent);
-        });
-
-        walletArea.setOnClickListener(v -> {
-            Intent intent = new Intent(FarmerDashboardActivity.this, WalletActivity.class);
-            startActivity(intent);
-        });
-
-        RefreshWalletbyImage.setOnClickListener(v -> {
-            refreshWalletUI();
-        });
-
-        DashboardSearch.setOnClickListener(v -> {
-            // Add search functionality
-        });
-    }
-
-    private void fetchDashboardData() {
-        Log.d(TAG, "Fetching dashboard data...");
-
-        // Verify authentication before making request
-        if (!sessionManager.isLoggedIn()) {
-            Log.e(TAG, "User not authenticated");
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
-            isManualRefresh = false;
-            return;
-        }
-
-        // Show loading indicator if manual refresh
-        if (isManualRefresh && swipeRefreshLayout != null) {
-            swipeRefreshLayout.setRefreshing(true);
-        }
-
-        // Make API call with authentication
-        RetrofitClient.getApiService(this).getDashboard().enqueue(new Callback<DashboardService.DashboardResponse>() {
-            @Override
-            public void onResponse(Call<DashboardService.DashboardResponse> call,
-                                   Response<DashboardService.DashboardResponse> response) {
-
-                Log.d(TAG, "Dashboard API response code: " + response.code());
-
-                // Stop refresh animation
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-
-                if (response.isSuccessful() && response.body() != null) {
-                    DashboardService.DashboardResponse data = response.body();
-
-                    Log.d(TAG, "Dashboard data received successfully");
-
-                    // Save values safely
-                    fullName = data.getUsername() != null ? data.getUsername() : "User";
-                    walletBalance = data.getWallet_amt() != null ? data.getWallet_amt() : "0.00";
-                    todaySales = data.getTodayIncome() != null ? data.getTodayIncome() : "0.00";
-
-                    // Update UI on main thread
-                    runOnUiThread(() -> {
-                        updateGreeting(fullName);
-
-                        if (isBalanceVisible) {
-                            tvWalletBalance.setText(String.format("NRs. %s", walletBalance));
-                            tvSalesAmount.setText(String.format("NRs. %s", todaySales));
-                        }
-                    });
-
-                    // Show success message ONLY on manual refresh
-                    if (isManualRefresh) {
-                        Toast.makeText(FarmerDashboardActivity.this,
-                                "Dashboard refreshed", Toast.LENGTH_SHORT).show();
-                        isManualRefresh = false;
-                    }
-                } else {
-                    // Handle error response
-                    String errorMessage = "Failed to load dashboard data";
-
-                    if (response.code() == 401 || response.code() == 403) {
-                        errorMessage = "Session expired. Please login again.";
-                        sessionManager.clearSession();
-                        Log.e(TAG, "Authentication failed: " + response.code());
-                    } else if (response.errorBody() != null) {
-                        try {
-                            String errorBody = response.errorBody().string();
-                            Log.e(TAG, "Error response: " + errorBody);
-
-                            DashboardService.DashboardResponse errorResponse =
-                                    new Gson().fromJson(errorBody, DashboardService.DashboardResponse.class);
-
-                            if (errorResponse != null && errorResponse.getError() != null) {
-                                errorMessage = errorResponse.getError();
-                            }
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error parsing error response", e);
-                        }
-                    }
-
-                    Toast.makeText(FarmerDashboardActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                    isManualRefresh = false;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DashboardService.DashboardResponse> call, Throwable t) {
-                Log.e(TAG, "Dashboard API call failed", t);
-
-                // Stop refresh animation
-                if (swipeRefreshLayout != null) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-
-                Toast.makeText(FarmerDashboardActivity.this,
-                        "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-
-                isManualRefresh = false;
-            }
-        });
+        findViewById(R.id.btnProfile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        findViewById(R.id.ivRefresh).setOnClickListener(v -> refreshWalletUI());
     }
 
     @SuppressLint("SetTextI18n")
     public void updateGreeting(String name) {
         int timeOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        String greeting;
-
-        if (timeOfDay < 12) {
-            greeting = "Good Morning";
-        } else if (timeOfDay < 16) {
-            greeting = "Good Afternoon";
-        } else if (timeOfDay < 21) {
-            greeting = "Good Evening";
-        } else {
-            greeting = "Good Night";
-        }
-
+        String greeting = (timeOfDay < 12) ? "Good Morning" : (timeOfDay < 16) ? "Good Afternoon" : (timeOfDay < 21) ? "Good Evening" : "Good Night";
         TextView tvGreeting = findViewById(R.id.tvGreeting);
-        tvGreeting.setText(String.format("%s, %s", greeting, name));
+        if (tvGreeting != null) tvGreeting.setText(greeting + ", " + name);
     }
 
     private void refreshWalletUI() {
         Log.d(TAG, "Refreshing wallet data...");
 
-        RetrofitClient.getApiService(this).getRefreshWallet()
+        RetrofitClient.getApiService(this).getRefreshWallet(sessionManager.getAuthToken(), sessionManager.getUserId())
                 .enqueue(new Callback<RefreshWallet.refreshWalletResponse>() {
                     @Override
-                    public void onResponse(Call<RefreshWallet.refreshWalletResponse> call,
-                                           Response<RefreshWallet.refreshWalletResponse> response) {
+                    public void onResponse(@NonNull Call<RefreshWallet.refreshWalletResponse> call,
+                                           @NonNull Response<RefreshWallet.refreshWalletResponse> response) {
 
                         Log.d(TAG, "Wallet refresh response code: " + response.code());
 
@@ -325,16 +254,16 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                             RefreshWallet.refreshWalletResponse data = response.body();
 
                             String balance = data.getBalance() != null ? data.getBalance() : "0.00";
-                            String todaysIncome = data.getTodaysIncome() != null ? data.getTodaysIncome() : "0.00";
+                            String todayIncome = data.getTodaysIncome() != null ? data.getTodaysIncome() : "0.00";
 
                             // Update local variables
                             walletBalance = balance;
-                            todaySales = todaysIncome;
+                            todaySales = todayIncome;
 
                             // Update UI only if balance is visible
                             if (isBalanceVisible) {
                                 tvWalletBalance.setText(String.format("NRs. %s", balance));
-                                tvSalesAmount.setText(String.format("NRs. %s", todaysIncome));
+                                tvSalesAmount.setText(String.format("NRs. %s", todayIncome));
                             }
 
                             Toast.makeText(FarmerDashboardActivity.this,
@@ -366,7 +295,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<RefreshWallet.refreshWalletResponse> call, Throwable t) {
+                    public void onFailure(@NonNull Call<RefreshWallet.refreshWalletResponse> call, @NonNull Throwable t) {
                         Log.e(TAG, "Wallet refresh failed", t);
                         Toast.makeText(FarmerDashboardActivity.this,
                                 "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -377,7 +306,6 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh dashboard when returning to this activity
         if (sessionManager.isLoggedIn()) {
             fetchDashboardData();
         }

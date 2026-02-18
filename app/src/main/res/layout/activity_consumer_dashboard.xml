@@ -1,13 +1,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_topical_forest">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomNavigation">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,8 +56,8 @@
 
                     <TextView
                         android:id="@+id/btnProfile"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/circle_white_border"
                         android:gravity="center"
                         android:text="@string/UserProfile"
@@ -79,14 +86,14 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:contentDescription="@string/search"
+                            android:contentDescription="@string/search_user"
                             android:src="@drawable/ic_search" />
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@android:color/transparent"
-                            android:hint="@string/search"
+                            android:hint="@string/search_user"
                             android:paddingStart="10dp"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -121,7 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvWalletLabel"
-                        android:text="2300.00"
+                        android:text="@string/astrix_balance"
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -158,27 +165,198 @@
                         android:layout_below="@id/divider"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="16dp"
-                        android:text="300.00"
+                        android:text="@string/astrix_balance"
                         android:textColor="@android:color/black"
                         android:textStyle="bold" />
 
-                    <ImageView
+                    <RelativeLayout
                         android:id="@+id/ivRefresh"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
                         android:layout_below="@id/divider"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="14dp"
-                        android:src="@drawable/ic_refresh" />
+                        android:layout_centerHorizontal="true">
+                        <ImageView
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_centerInParent="true"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="@string/refresh_wallet"
+                            android:src="@drawable/ic_refresh" />
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
+            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Quick Actions" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black"/>
+            </RelativeLayout>
+
+            <!-- Quick Actions Grid -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:alignmentMode="alignMargins"
+                android:columnOrderPreserved="false">
+
+
+                <!-- New Orders -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardOrders"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Connections" android:textSize="16sp" android:layout_centerVertical="true" android:textStyle="bold" android:textColor="@color/topical_forest"/>
+                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/connections" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- My Expenses -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardMyExpense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="My\nExpenses"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/topical_forest"/>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/earning" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </GridLayout>
+
+            <!-- Stats Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="8dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardOrderAnalytics"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#D5E8D4"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_alignParentStart="true">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Order Analytics" android:textSize="12sp" android:textColor="@color/topical_forest"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="20" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/topical_forest"/>
+                        </LinearLayout>
+                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/order" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardReviews"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="#FFF2CC"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+                    <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_alignParentStart="true">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Reviews" android:textSize="12sp" android:textColor="@color/topical_forest"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4.8" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/topical_forest"/>
+                        </LinearLayout>
+                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/rating" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Order Status -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="#E0F2F1">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <TextView
+                        android:id="@+id/os_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recent Order Status"
+                        android:textStyle="bold"
+                        android:textColor="@color/topical_forest"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/os_title"
+                        android:layout_marginTop="4dp"
+                        android:text="Order #1023 – Out for Delivery 🚚"
+                        android:textColor="@android:color/black"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- Categories Header -->
-            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="16dp" android:paddingEnd="16dp" android:paddingTop="8dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Categories" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black"/>
-                <TextView android:id="@+id/tvViewAllCategories" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="View All >" android:layout_alignParentEnd="true" android:textColor="@android:color/darker_gray" android:textSize="14sp" android:clickable="true" android:focusable="true"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/tvViewAllCategories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="View All >"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"
+                    android:clickable="true"
+                    android:focusable="true"/>
             </RelativeLayout>
 
             <!-- Categories Horizontal (Default View - First 4) -->
@@ -193,24 +371,88 @@
                 android:paddingEnd="16dp"
                 android:gravity="center_horizontal">
                 <!-- Veg -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                    <ImageView android:layout_width="60dp" android:layout_height="60dp" android:src="@drawable/vegetables" android:padding="12dp" android:background="@drawable/category_item_bg"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Vegetables" android:textSize="11sp" android:layout_marginTop="6dp" android:textColor="#444444"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/vegetables"
+                        android:padding="12dp"
+                        android:background="@drawable/category_item_bg"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vegetables"
+                        android:textSize="11sp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="#444444"/>
                 </LinearLayout>
                 <!-- Fruits -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                    <ImageView android:layout_width="60dp" android:layout_height="60dp" android:src="@drawable/fruits" android:padding="12dp" android:background="@drawable/category_item_bg"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fruits" android:textSize="11sp" android:layout_marginTop="6dp" android:textColor="#444444"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/fruits"
+                        android:padding="12dp"
+                        android:background="@drawable/category_item_bg"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fruits"
+                        android:textSize="11sp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="#444444"/>
                 </LinearLayout>
                 <!-- Dairy -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                    <ImageView android:layout_width="60dp" android:layout_height="60dp" android:src="@drawable/dairy" android:padding="12dp" android:background="@drawable/category_item_bg"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dairy" android:textSize="11sp" android:layout_marginTop="6dp" android:textColor="#444444"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/dairy"
+                        android:padding="12dp"
+                        android:background="@drawable/category_item_bg"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dairy"
+                        android:textSize="11sp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="#444444"/>
                 </LinearLayout>
                 <!-- Grains -->
-                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
-                    <ImageView android:layout_width="60dp" android:layout_height="60dp" android:src="@drawable/grains" android:padding="12dp" android:background="@drawable/category_item_bg"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Grains" android:textSize="11sp" android:layout_marginTop="6dp" android:textColor="#444444"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/grains"
+                        android:padding="12dp"
+                        android:background="@drawable/category_item_bg"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Grains"
+                        android:textSize="11sp"
+                        android:layout_marginTop="6dp"
+                        android:textColor="#444444"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -256,39 +498,107 @@
 
             <!-- Nearby Farmers Section -->
             <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nearby Farmers" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5 km >" android:layout_alignParentEnd="true" android:textColor="@android:color/darker_gray" android:textSize="14sp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/nearby_top_rated_farmers" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black"/>
+
             </RelativeLayout>
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingStart="16dp" android:paddingEnd="16dp">
                 <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="8dp" app:cardBackgroundColor="@color/white" app:cardCornerRadius="16dp" app:cardElevation="2dp">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:orientation="vertical">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
-                            <ImageView android:layout_width="45dp" android:layout_height="45dp" android:src="@drawable/ic_launcher_foreground" android:background="@drawable/circle_white_border" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="8dp">
-                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Prakash Yadav" android:textStyle="bold" android:textSize="14sp" android:textColor="@android:color/black"/>
-                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📍 4.8" android:textSize="11sp" android:textColor="@android:color/darker_gray"/>
+                            <ImageView
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:src="@drawable/ic_launcher_foreground"
+                                android:background="@drawable/circle_white_border" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginStart="8dp">
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/farmer1"
+                                     android:text="Farmer 1"
+                                     android:textStyle="bold"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/farmer1_userid"
+                                     android:text="@string/userid"
+                                     android:textSize="11sp"
+                                     android:textColor="@android:color/darker_gray"/>
                             </LinearLayout>
                         </LinearLayout>
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp" android:gravity="center_vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★★★★★ 4.8" android:textColor="@color/topical_forest" android:textSize="10sp" android:layout_weight="1"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✓ 10k" android:background="@drawable/category_item_bg" android:paddingStart="6dp" android:paddingEnd="6dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:textSize="10sp" android:textColor="@color/topical_forest"/>
-                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/farmer1_rating"
+                                android:gravity="end"
+                                android:text="@string/_5star"
+                                android:textColor="@color/topical_forest"
+                                android:textSize="10sp"
+                                android:layout_weight="1"
+                                tools:ignore="SmallSp" />
+                            </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" app:cardBackgroundColor="@color/white" app:cardCornerRadius="16dp" app:cardElevation="2dp">
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:orientation="vertical">
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
-                            <ImageView android:layout_width="45dp" android:layout_height="45dp" android:src="@drawable/ic_launcher_foreground" android:background="@drawable/circle_white_border" />
-                            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginStart="8dp">
-                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Anita Shrestha" android:textStyle="bold" android:textSize="14sp" android:textColor="@android:color/black"/>
-                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📍 4.7" android:textSize="11sp" android:textColor="@android:color/darker_gray"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:src="@drawable/ic_launcher_foreground"
+                                android:contentDescription="@string/farmer"
+                                android:background="@drawable/circle_white_border" />
+                            <LinearLayout android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginStart="8dp">
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/farmer2"
+                                     android:text="Farmer 2"
+                                     android:textStyle="bold"
+                                     android:textSize="14sp"
+                                     android:textColor="@android:color/black"/>
+                                 <TextView
+                                     android:layout_width="wrap_content"
+                                     android:layout_height="wrap_content"
+                                     android:id="@+id/farmer2_userid"
+                                     android:text="userid"
+                                     android:textSize="11sp"
+                                     android:textColor="@android:color/darker_gray"/>
                             </LinearLayout>
                         </LinearLayout>
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp" android:gravity="center_vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="★★★★★ 4.7" android:textColor="@color/topical_forest" android:textSize="10sp" android:layout_weight="1"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✓ 7k" android:background="@drawable/category_item_bg" android:paddingStart="6dp" android:paddingEnd="6dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:textSize="10sp" android:textColor="@color/topical_forest"/>
-                        </LinearLayout>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:gravity="end" android:text="@string/_5star" android:textColor="@color/topical_forest" android:textSize="10sp" android:layout_weight="1"/>
+                           </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
@@ -333,47 +643,16 @@
             </androidx.cardview.widget.CardView>
 
             <!-- Quick Actions -->
-            <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Quick Actions" android:textSize="18sp" android:textStyle="bold" android:textColor="@android:color/black"/>
-            </RelativeLayout>
 
-            <GridLayout
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp">
-                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardBackgroundColor="@color/white">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:text="🛒 My Orders" android:textStyle="bold" android:textColor="@color/topical_forest" android:gravity="center"/>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardBackgroundColor="@color/white">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:text="❤️ Wishlist" android:textStyle="bold" android:textColor="@color/topical_forest" android:gravity="center"/>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardBackgroundColor="@color/white">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:text="📍 Nearby" android:textStyle="bold" android:textColor="@color/topical_forest" android:gravity="center"/>
-                </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="4dp" app:cardCornerRadius="12dp" app:cardBackgroundColor="@color/white">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:text="⭐ Top Rated" android:textStyle="bold" android:textColor="@color/topical_forest" android:gravity="center"/>
-                </androidx.cardview.widget.CardView>
-            </GridLayout>
-
-            <!-- Order Status -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="#E0F2F1">
-                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
-                    <TextView android:id="@+id/os_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Recent Order Status" android:textStyle="bold" android:textColor="@color/topical_forest"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/os_title" android:layout_marginTop="4dp" android:text="Order #1023 – Out for Delivery 🚚" android:textColor="@android:color/black"/>
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
-
-            <View android:layout_width="match_parent" android:layout_height="24dp"/>
+                android:layout_height="24dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

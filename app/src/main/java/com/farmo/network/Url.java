@@ -1,6 +1,6 @@
 package com.farmo.network;
 
-public class ApiUrl {
+public class Url {
     // ================== Authentication ==================
     private static final String CHECK_USERID = "api/auth/check-userid";
     private static final String LOGIN = "api/auth/login";
