@@ -1,5 +1,6 @@
 package com.farmo.activities.authActivities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +9,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.farmo.R;
 import com.farmo.network.auth.ForgotPasswordRequest;
 import com.farmo.network.auth.ForgotPasswordResponse;
@@ -20,7 +20,7 @@ import com.farmo.network.auth.VerifyEmailRequest;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
-
+import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +30,6 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
     private TextInputEditText etEmailInput;
     private TextInputLayout tilEmailInput;
     private Button btnAction;
-    private LinearLayout btnBack;
     private ProgressDialog progressDialog;
     private TextView tvInstruction, tvEmailDisplay;
     
@@ -45,7 +44,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
         etEmailInput = findViewById(R.id.etEmail);
         tilEmailInput = findViewById(R.id.tilEmailInput);
         btnAction = findViewById(R.id.btnSendOtp);
-        btnBack = findViewById(R.id.btnBack);
+        LinearLayout btnBack = findViewById(R.id.btnBack);
         tvInstruction = findViewById(R.id.tvInstruction);
         tvEmailDisplay = findViewById(R.id.tvEmail);
 
@@ -64,7 +63,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
         }
 
         btnAction.setOnClickListener(v -> {
-            String input = etEmailInput.getText().toString().trim();
+            String input = Objects.requireNonNull(etEmailInput.getText()).toString().trim();
             if (input.isEmpty()) {
                 etEmailInput.setError("Field cannot be empty");
                 return;
@@ -78,6 +77,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setupEmailVerificationUI(String halfEmail) {
         isEmailVerificationStep = true;
         tvEmailDisplay.setVisibility(View.VISIBLE);
@@ -94,7 +94,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
         
         RetrofitClient.getApiService(this).forgotPassword(request).enqueue(new Callback<ForgotPasswordResponse>() {
             @Override
-            public void onResponse(Call<ForgotPasswordResponse> call, Response<ForgotPasswordResponse> response) {
+            public void onResponse(@NonNull Call<ForgotPasswordResponse> call, @NonNull Response<ForgotPasswordResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
                     userId = response.body().getUserId();
@@ -106,7 +106,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ForgotPasswordResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<ForgotPasswordResponse> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(FP_ForgotPasswordActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -119,7 +119,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
         
         RetrofitClient.getApiService(this).verifyEmail(request).enqueue(new Callback<MessageResponse>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+            public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful()) {
                     Toast.makeText(FP_ForgotPasswordActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
@@ -132,7 +132,7 @@ public class FP_ForgotPasswordActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(FP_ForgotPasswordActivity.this, "Network Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
