@@ -11,10 +11,10 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottomNavigation">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
 
             <LinearLayout

@@ -121,24 +121,28 @@
 
         <Button
             android:text="@string/load"
+            android:layout_width="0dp"
             android:layout_columnWeight="1"
             android:layout_margin="6dp"
             android:backgroundTint="@color/topical_forest"/>
         <Button
             android:text="@string/withdraw"
+            android:layout_width="0dp"
             android:layout_columnWeight="1"
             android:layout_margin="6dp"
             android:backgroundTint="@color/topical_forest"/>
 
         <Button
             android:text="@string/pay_farmer"
+            android:layout_width="0dp"
             android:layout_columnWeight="1"
-            android:layout_margin="4dp"
+            android:layout_margin="6dp"
             android:backgroundTint="@color/topical_forest"/>
         <Button
             android:text="@string/order_payment"
+            android:layout_width="0dp"
             android:layout_columnWeight="1"
-            android:layout_margin="4dp"
+            android:layout_margin="6dp"
             android:backgroundTint="@color/topical_forest"/>
     </GridLayout>
 
