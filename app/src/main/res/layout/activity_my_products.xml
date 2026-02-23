@@ -238,14 +238,18 @@
                     android:src="@android:drawable/ic_menu_search"
                     app:tint="#90A4AE" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="No Products Found"
-                    android:textColor="#607D8B"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/circle_white_border"
+                            android:backgroundTint="#EF5350"
+                            android:gravity="center"
+                            android:minWidth="80dp"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"
+                            android:text="Out of Stock"
+                            android:textColor="@color/white"
+                            android:textSize="11sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
