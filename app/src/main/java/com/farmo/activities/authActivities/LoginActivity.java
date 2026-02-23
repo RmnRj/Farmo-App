@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -89,10 +88,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performTokenLogin() {
-        if (loginButton != null) {
-            loginButton.setEnabled(false);
-            loginButton.setAlpha(0.5f);
-        }
 
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
@@ -115,10 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                     );
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else {
-                    if (loginButton != null) {
-                        loginButton.setEnabled(true);
-                        loginButton.setAlpha(1.0f);
-                    }
                     sessionManager.clearSession();
                     Toast.makeText(LoginActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
                 }
@@ -136,21 +127,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        if (loginButton != null) {
-            loginButton.setEnabled(false);
-            loginButton.setAlpha(0.5f);
-        }
-
         String identifier = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
         boolean rememberMe = cbRememberMe.isChecked();
 
         if (identifier.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter credentials", Toast.LENGTH_SHORT).show();
-            if (loginButton != null) {
-                loginButton.setEnabled(true);
-                loginButton.setAlpha(1.0f);
-            }
             return;
         }
 
@@ -174,20 +156,12 @@ public class LoginActivity extends AppCompatActivity {
                     );
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else {
-                    if (loginButton != null) {
-                        loginButton.setEnabled(true);
-                        loginButton.setAlpha(1.0f);
-                    }
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                if (loginButton != null) {
-                    loginButton.setEnabled(true);
-                    loginButton.setAlpha(1.0f);
-                }
                 progressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
@@ -195,21 +169,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToDashboard(String userId, String userType) {
-        if (userType.equalsIgnoreCase("farmer") || userType.equalsIgnoreCase("verifiedfarmer")) {
+        if (userType.equals("Farmer") || userType.equals("VerifiedFarmer")) {
             Intent intent = new Intent(LoginActivity.this, FarmerDashboardActivity.class);
             intent.putExtra("USER_ID", userId);
             intent.putExtra("USER_TYPE", userType);
             startActivity(intent);
-
-        } else if (userType.equalsIgnoreCase("consumer") || userType.equalsIgnoreCase("verifiedconsumer")) {
+            finish(); // ✅ inside the branch
+        } else if (userType.equals("Consumer") || userType.equals("VerifiedConsumer")) {
             Intent intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
             intent.putExtra("USER_ID", userId);
             intent.putExtra("USER_TYPE", userType);
             startActivity(intent);
-
+            finish(); // ✅ inside the branch
         } else {
             Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
+            // ❌ No finish() here — stay on login screen
         }
-        finish();
     }
 }

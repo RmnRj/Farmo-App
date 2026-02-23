@@ -458,13 +458,13 @@
                             android:layout_height="wrap_content"
                             android:background="@drawable/circle_white_border"
                             android:backgroundTint="#EF5350"
+                            android:gravity="center"
+                            android:minWidth="80dp"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="2dp"
                             android:text="Out of Stock"
                             android:textColor="@color/white"
-                            android:textSize="11sp"
-                            android:gravity="center"
-                            android:minWidth="80dp" />
+                            android:textSize="11sp" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:layout_width="wrap_content"
