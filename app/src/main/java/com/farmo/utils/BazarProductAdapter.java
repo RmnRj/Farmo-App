@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.farmo.R;
+
 import java.util.List;
 
 public class BazarProductAdapter extends RecyclerView.Adapter<BazarProductAdapter.ProductViewHolder> {
@@ -26,7 +28,7 @@ public class BazarProductAdapter extends RecyclerView.Adapter<BazarProductAdapte
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_bazar_product, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_product_list, parent, false);
         return new ProductViewHolder(view);
     }
 

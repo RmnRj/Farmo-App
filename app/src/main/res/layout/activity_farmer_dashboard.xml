@@ -32,15 +32,15 @@
                         android:gravity="top"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
-                        android:paddingTop="20dp"
+                        android:paddingTop="25dp"
                         android:paddingEnd="20dp">
 
                         <TextView
                             android:id="@+id/tvGreeting"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:text=""
+                            android:text="@string/good_morning"
                             android:textColor="#FFFFFF"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -48,7 +48,7 @@
                         <ImageView
                             android:id="@+id/btnNotification"
                             android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_height="48dp"
                             android:layout_marginEnd="15dp"
                             android:contentDescription="@string/title_notifications"
                             android:src="@drawable/ic_notification" />
@@ -57,13 +57,15 @@
                             android:id="@+id/btnProfile"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:background="@drawable/circle_white_border"
-                            android:gravity="center"
-                            android:text="@string/UserProfile"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
+                            android:background="@drawable/rounded_filter_bg"
+                            android:backgroundTint="#FFFFFF"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:textSize="23sp"
+                            android:text="@string/UserProfile"
+                            android:textColor="@color/topical_forest"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <androidx.cardview.widget.CardView

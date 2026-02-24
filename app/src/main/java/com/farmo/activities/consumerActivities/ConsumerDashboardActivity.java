@@ -380,10 +380,12 @@ public class ConsumerDashboardActivity extends AppCompatActivity {
                     if (((LinearLayout) v).getChildCount() > 1) {
                         View textChild = ((LinearLayout) v).getChildAt(1);
                         if (textChild instanceof TextView) {
-                            String category = ((TextView) textChild).getText().toString();
-                            Intent intent = new Intent(ConsumerDashboardActivity.this, CategoryProductsActivity.class);
-                            intent.putExtra("CATEGORY_NAME", category);
-                            startActivity(intent);
+                            Toast.makeText(ConsumerDashboardActivity.this,
+                                    "Catagory clicked", Toast.LENGTH_SHORT).show();
+//                            String category = ((TextView) textChild).getText().toString();
+//                            Intent intent = new Intent(ConsumerDashboardActivity.this, CategoryProductsActivity.class);
+//                            intent.putExtra("CATEGORY_NAME", category);
+//                            startActivity(intent);
                         }
                     }
                 });

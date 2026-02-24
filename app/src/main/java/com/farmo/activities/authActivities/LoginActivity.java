@@ -39,14 +39,21 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // ← Move this FIRST
+        setContentView(R.layout.activity_login);
 
         sessionManager = new SessionManager(this);
-        loginButton = findViewById(R.id.btn_login); // ← Now safe to find
+        loginButton = findViewById(R.id.btn_login);
+
+        // Initialize progressDialog to prevent NullPointerException
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Logging in...");
+        progressDialog.setCancelable(false);
 
         if (sessionManager.isLoggedIn()) {
-            loginButton.setEnabled(false);
-            loginButton.setAlpha(0.5f);
+            if (loginButton != null) {
+                loginButton.setEnabled(false);
+                loginButton.setAlpha(0.5f);
+            }
             performTokenLogin();
             return;
         }
@@ -82,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performTokenLogin() {
-
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
         String refreshToken = sessionManager.getRefreshToken();
@@ -106,16 +112,23 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     sessionManager.clearSession();
                     Toast.makeText(LoginActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
+                    // Re-enable login button if session expired
+                    if (loginButton != null) {
+                        loginButton.setEnabled(true);
+                        loginButton.setAlpha(1.0f);
+                    }
+                    initViews();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
                 if (loginButton != null) {
                     loginButton.setEnabled(true);
                     loginButton.setAlpha(1.0f);
                 }
-                Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+                initViews();
             }
         });
     }
@@ -130,7 +143,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        progressDialog.show();
+        if (progressDialog != null) {
+            progressDialog.show();
+        }
 
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
         LoginRequest loginRequest = new LoginRequest(identifier, password, rememberMe, deviceInfo);
@@ -138,7 +153,9 @@ public class LoginActivity extends AppCompatActivity {
         RetrofitClient.getApiService(this).login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
                     sessionManager.saveSession(
@@ -156,7 +173,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                progressDialog.dismiss();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -168,16 +187,15 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra("USER_ID", userId);
             intent.putExtra("USER_TYPE", userType);
             startActivity(intent);
-            finish(); // ✅ inside the branch
+            finish();
         } else if (userType.equals("Consumer") || userType.equals("VerifiedConsumer")) {
             Intent intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
             intent.putExtra("USER_ID", userId);
             intent.putExtra("USER_TYPE", userType);
             startActivity(intent);
-            finish(); // ✅ inside the branch
+            finish();
         } else {
             Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
-            // ❌ No finish() here — stay on login screen
         }
     }
 }

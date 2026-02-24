@@ -55,7 +55,6 @@ public class MyProductsActivity extends AppCompatActivity {
 
         initViews();
         setupTopBar();
-        setupTabs();
         setupFab();
         loadFromJson();
     }
@@ -66,9 +65,7 @@ public class MyProductsActivity extends AppCompatActivity {
     private void initViews() {
         productContainer = findViewById(R.id.productContainer);
         noDataView       = findViewById(R.id.noDataView);
-        tabAllProducts   = findViewById(R.id.tabAllProducts);
-        tabVegetables    = findViewById(R.id.tabVegetables);
-        tabGrains        = findViewById(R.id.tabGrains);
+
     }
 
     private void setupTopBar() {
@@ -76,14 +73,7 @@ public class MyProductsActivity extends AppCompatActivity {
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
     }
 
-    private void setupTabs() {
-        if (tabAllProducts != null)
-            tabAllProducts.setOnClickListener(v -> selectTab(tabAllProducts, "All Products"));
-        if (tabVegetables  != null)
-            tabVegetables .setOnClickListener(v -> selectTab(tabVegetables,  "Vegetables"));
-        if (tabGrains      != null)
-            tabGrains     .setOnClickListener(v -> selectTab(tabGrains,      "Grains"));
-    }
+
 
     private void setupFab() {
         FloatingActionButton fab = findViewById(R.id.fabAddProduct);

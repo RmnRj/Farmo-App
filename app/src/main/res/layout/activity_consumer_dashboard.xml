@@ -30,15 +30,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:background="@drawable/custom_header_bg"
-                        android:gravity="center_vertical"
+                        android:gravity="top"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
+                        android:paddingTop="25dp"
                         android:paddingEnd="20dp">
 
                         <TextView
                             android:id="@+id/tvGreeting"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:layout_weight="1"
                             android:text="@string/good_morning"
 
@@ -49,7 +50,7 @@
                         <ImageView
                             android:id="@+id/btnNotification"
                             android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_height="48dp"
                             android:layout_marginEnd="15dp"
                             android:contentDescription="@string/title_notifications"
                             android:src="@drawable/ic_notification" />
@@ -63,6 +64,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:gravity="center"
+                            android:textSize="23sp"
                             android:text="@string/UserProfile"
                             android:textColor="@color/topical_forest"
                             android:textStyle="bold" />
