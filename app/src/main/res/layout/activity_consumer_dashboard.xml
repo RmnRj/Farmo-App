@@ -30,10 +30,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:background="@drawable/custom_header_bg"
-                        android:gravity="top"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
-                        android:paddingTop="20dp"
                         android:paddingEnd="20dp">
 
                         <TextView
@@ -42,6 +41,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/good_morning"
+
                             android:textColor="#FFFFFF"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -58,13 +58,14 @@
                             android:id="@+id/btnProfile"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:background="@drawable/circle_white_border"
+                            android:background="@drawable/rounded_filter_bg"
+                            android:backgroundTint="#FFFFFF"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:gravity="center"
                             android:text="@string/UserProfile"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:clickable="true"
-                            android:focusable="true" />
+                            android:textColor="@color/topical_forest"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <androidx.cardview.widget.CardView
@@ -96,7 +97,9 @@
                                 android:background="@android:color/transparent"
                                 android:hint="@string/search_user"
                                 android:paddingStart="10dp"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:inputType="text"
+                                android:importantForAutofill="no" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </FrameLayout>
@@ -829,6 +832,7 @@
                                     android:textSize="16sp" />
 
                                 <TextView
+                                    android:id="@+id/farmer_location_today"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Pokhara • Today"
@@ -885,6 +889,7 @@
                                 android:textColor="@android:color/black" />
 
                             <TextView
+                                android:id="@+id/tvPriceRecommended"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="NRP 100 / kg"
@@ -895,6 +900,7 @@
                         </RelativeLayout>
 
                         <TextView
+                            android:id="@+id/tvPriceUnitRecommended"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="NRP 100 / kg"

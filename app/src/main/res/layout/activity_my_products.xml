@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E8F5E9"
@@ -10,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#2E7D32"
+        android:background="#00473B"
         android:padding="16dp">
 
         <ImageView
@@ -18,12 +19,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="#FFFFFF"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:focusable="true"
-            android:rotation="180"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="#FFFFFF" />
+            android:focusable="true"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,94 +34,85 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/btnAddProduct"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@android:drawable/ic_input_add"
-            app:tint="#FFFFFF" />
     </RelativeLayout>
 
-    <!-- ── SEARCH BAR ────────────────────────────────────────────────────── -->
-    <LinearLayout
+    <!-- ── SEARCH BAR (Matches Dashboard Style) ──────────────────────────── -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#2E7D32"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp">
+        android:layout_height="79dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="#FFFFFF"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
+            android:layout_height="49dp"
+            android:background="@drawable/custom_header_bg"
+            android:orientation="horizontal" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_menu_search"
-                app:tint="#90A4AE" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="28dp"
-                android:text="Search Farmer/Consumer"
-                android:textColor="#90A4AE"
-                android:textSize="14sp" />
-        </RelativeLayout>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:paddingEnd="5dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="@string/search_user"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/dashboard_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/search_user"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:paddingStart="10dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
     <!-- ── MY PRODUCTS HEADER + FILTER BUTTON ────────────────────────────── -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="#E8F5E9"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:text="My Products"
-            android:textColor="#2E7D32"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnFilter"
+            android:layout_width="77dp"
+            android:layout_height="31dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:background="#2E7D32"
+            android:background="@drawable/rounded_filter_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="12dp"
-            android:paddingEnd="12dp"
             android:paddingTop="6dp"
+            android:paddingEnd="12dp"
             android:paddingBottom="6dp">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@android:drawable/ic_menu_manage"
+                android:src="@drawable/filter"
                 app:tint="#FFFFFF" />
 
             <TextView
@@ -135,73 +126,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!-- ── CATEGORY TABS ─────────────────────────────────────────────────── -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:elevation="2dp"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
-
-            <TextView
-                android:id="@+id/tabAllProducts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#C8E6C9"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="All Products"
-                android:textColor="#2E7D32"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tabVegetables"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Vegetables"
-                android:textColor="#546E7A"
-                android:textSize="13sp" />
-
-            <TextView
-                android:id="@+id/tabGrains"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Grains"
-                android:textColor="#546E7A"
-                android:textSize="13sp" />
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <!-- ── PRODUCT LIST  (productContainer starts VISIBLE, noDataView GONE) ─ -->
+    <!-- ── PRODUCT LIST ─────────────────────────────────────────────────── -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -238,25 +163,23 @@
                     android:src="@android:drawable/ic_menu_search"
                     app:tint="#90A4AE" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_white_border"
-                            android:backgroundTint="#EF5350"
-                            android:gravity="center"
-                            android:minWidth="80dp"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="2dp"
-                            android:text="Out of Stock"
-                            android:textColor="@color/white"
-                            android:textSize="11sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:minWidth="80dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:text="Out of Stock"
+                    android:textColor="@color/medium_gray"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:text="Try changing filter or add a new product"
-                    android:textColor="#78909C"
+                    android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -270,9 +193,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:contentDescription="TODO"
+        android:contentDescription="Add Product"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#2E7D32"
+        app:backgroundTint="#00473B"
         app:tint="#FFFFFF" />
 
 </LinearLayout>

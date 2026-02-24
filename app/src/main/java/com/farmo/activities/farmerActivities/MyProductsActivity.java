@@ -99,7 +99,7 @@ public class MyProductsActivity extends AppCompatActivity {
                 bg.setColor(Color.parseColor("#C8E6C9"));
                 bg.setCornerRadius(16f);
                 t.setBackground(bg);
-                t.setTextColor(Color.parseColor("#2E7D32"));
+                t.setTextColor(Color.parseColor("#00473B"));
                 t.setTypeface(null, Typeface.BOLD);
             } else {
                 t.setBackgroundColor(Color.TRANSPARENT);

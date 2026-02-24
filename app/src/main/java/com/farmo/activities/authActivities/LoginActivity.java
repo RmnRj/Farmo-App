@@ -39,25 +39,19 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login); // ← Move this FIRST
 
-        // 1. ALWAYS set the layout first
-        setContentView(R.layout.activity_login);
-
-        // 2. Initialize the session manager
         sessionManager = new SessionManager(this);
+        loginButton = findViewById(R.id.btn_login); // ← Now safe to find
 
-        // 3. Initialize all views
-        initViews();
-
-        // 4. Set up the progress dialog
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Signing you in...");
-        progressDialog.setCancelable(false);
-
-        // 5. Check for auto-login ONLY after views are ready
         if (sessionManager.isLoggedIn()) {
+            loginButton.setEnabled(false);
+            loginButton.setAlpha(0.5f);
             performTokenLogin();
+            return;
         }
+
+        initViews();
     }
 
     private void initViews() {
