@@ -1,4 +1,4 @@
-package com.farmo.utils;
+package com.farmo.model;
 
 public class BazarProduct {
 
