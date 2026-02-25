@@ -81,17 +81,21 @@ public class FarmerDashboardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Only refresh if data has already been loaded once (not on cold start)
-        if (sessionManager.isLoggedIn() && !walletBalance.equals("0.00")) {
+
+        // Check if the user is still logged in
+        if (sessionManager.isLoggedIn()) {
+            // Refresh all dashboard data (Wallet, Orders, Market Prices)
+            // This ensures data is current even if they just came back from another app
             fetchDashboardData();
-        } else if (!sessionManager.isLoggedIn()) {
+        } else {
+            // If session was cleared (e.g., token expired in background), kick to login
             redirectToLogin();
         }
     }
 
     private void redirectToLogin() {
         sessionManager.clearSession();
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(FarmerDashboardActivity.this, LoginActivity.class); // Explicit context
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

@@ -92,7 +92,7 @@ public class ConsumerDashboardActivity extends AppCompatActivity {
 
     private void redirectToLogin() {
         sessionManager.clearSession();
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(ConsumerDashboardActivity.this, LoginActivity.class); // Explicit context
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

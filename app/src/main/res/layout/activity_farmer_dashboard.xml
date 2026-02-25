@@ -32,13 +32,13 @@
                         android:gravity="top"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
-                        android:paddingTop="25dp"
+                        android:paddingTop="10dp"
                         android:paddingEnd="20dp">
 
                         <TextView
                             android:id="@+id/tvGreeting"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/good_morning"
                             android:textColor="#FFFFFF"

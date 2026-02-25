@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Button;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,8 +20,8 @@ import com.farmo.network.auth.LoginResponse;
 import com.farmo.network.RetrofitClient;
 import com.farmo.network.auth.TokenLoginRequest;
 import com.farmo.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,12 +29,13 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
     private TextInputEditText etUsername, etPassword;
-    private CheckBox cbRememberMe;
+    private boolean rememberMe = false;
+    private CheckBox cbRememberMe ;
     private ProgressDialog progressDialog;
     private SessionManager sessionManager;
-
-    Button loginButton;
+    private MaterialButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,31 +43,25 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         sessionManager = new SessionManager(this);
-        loginButton = findViewById(R.id.btn_login);
 
-        // Initialize progressDialog to prevent NullPointerException
+        // Initialize progressDialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logging in...");
         progressDialog.setCancelable(false);
 
+        initViews();
         if (sessionManager.isLoggedIn()) {
-            if (loginButton != null) {
-                loginButton.setEnabled(false);
-                loginButton.setAlpha(0.5f);
-            }
             performTokenLogin();
-            return;
         }
 
-        initViews();
     }
 
     private void initViews() {
         etUsername = findViewById(R.id.et_username);
         etPassword = findViewById(R.id.et_password);
-        cbRememberMe = findViewById(R.id.cb_remember_me);
         loginButton = findViewById(R.id.btn_login);
 
+        // Standard Login Button click
         if (loginButton != null) {
             loginButton.setOnClickListener(v -> performLogin());
         }
@@ -92,15 +87,28 @@ public class LoginActivity extends AppCompatActivity {
         String token = sessionManager.getAuthToken();
         String userId = sessionManager.getUserId();
         String refreshToken = sessionManager.getRefreshToken();
-        String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
 
+        if (token.isEmpty() || userId.isEmpty()) {
+            sessionManager.clearSession();
+            return;
+        }
+
+        progressDialog.setMessage("Auto-logging in...");
+        progressDialog.show();
+
+        String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
         TokenLoginRequest request = new TokenLoginRequest(token, refreshToken, userId, deviceInfo);
 
         RetrofitClient.getApiService(this).loginWithToken(request).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
+
+                    // CRITICAL CHANGE: Always pass 'true' as the last parameter
+                    // because we are already in an active session.
                     sessionManager.saveSession(
                             loginResponse.getUserId(),
                             loginResponse.getUserType(),
@@ -108,27 +116,21 @@ public class LoginActivity extends AppCompatActivity {
                             loginResponse.getRefreshToken(),
                             true
                     );
+
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else {
+                    // If the token is rejected, we MUST clear everything so the
+                    // user is forced back to manual login.
                     sessionManager.clearSession();
-                    Toast.makeText(LoginActivity.this, "Session expired", Toast.LENGTH_SHORT).show();
-                    // Re-enable login button if session expired
-                    if (loginButton != null) {
-                        loginButton.setEnabled(true);
-                        loginButton.setAlpha(1.0f);
-                    }
-                    initViews();
+                    Toast.makeText(LoginActivity.this, "Session expired, please login again", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+                Log.e(TAG, "Token login failed", t);
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
-                if (loginButton != null) {
-                    loginButton.setEnabled(true);
-                    loginButton.setAlpha(1.0f);
-                }
-                initViews();
             }
         });
     }
@@ -136,35 +138,36 @@ public class LoginActivity extends AppCompatActivity {
     private void performLogin() {
         String identifier = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
-        boolean rememberMe = cbRememberMe.isChecked();
 
         if (identifier.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter credentials", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (progressDialog != null) {
-            progressDialog.show();
-        }
+        progressDialog.setMessage("Logging in...");
+        progressDialog.show();
 
         String deviceInfo = Build.MANUFACTURER + " " + Build.MODEL;
-        LoginRequest loginRequest = new LoginRequest(identifier, password, rememberMe, deviceInfo);
+        // Notice: rememberMe is now hardcoded to 'true' to ensure session is always saved
+        LoginRequest loginRequest = new LoginRequest(identifier, password, false, deviceInfo);
 
         RetrofitClient.getApiService(this).login(loginRequest).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+
                 if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
+
+                    // Always save the session on a successful login
                     sessionManager.saveSession(
                             loginResponse.getUserId(),
                             loginResponse.getUserType(),
                             loginResponse.getToken(),
                             loginResponse.getRefreshToken(),
-                            rememberMe
+                            true // Auto-login is enabled by default
                     );
+                    //Toast.makeText(LoginActivity.this, loginResponse.getUserId() " ", Toast.LENGTH_SHORT).show();
                     goToDashboard(loginResponse.getUserId(), loginResponse.getUserType());
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
@@ -173,29 +176,27 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
+                if (progressDialog.isShowing()) progressDialog.dismiss();
+                Log.e(TAG, "Login failed", t);
                 Toast.makeText(LoginActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void goToDashboard(String userId, String userType) {
+        Intent intent;
         if (userType.equals("Farmer") || userType.equals("VerifiedFarmer")) {
-            Intent intent = new Intent(LoginActivity.this, FarmerDashboardActivity.class);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("USER_TYPE", userType);
-            startActivity(intent);
-            finish();
+            intent = new Intent(LoginActivity.this, FarmerDashboardActivity.class);
         } else if (userType.equals("Consumer") || userType.equals("VerifiedConsumer")) {
-            Intent intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
-            intent.putExtra("USER_ID", userId);
-            intent.putExtra("USER_TYPE", userType);
-            startActivity(intent);
-            finish();
+            intent = new Intent(LoginActivity.this, ConsumerDashboardActivity.class);
         } else {
-            Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Invalid user type: " + userType, Toast.LENGTH_SHORT).show();
+            return;
         }
+        intent.putExtra("USER_ID", userId);
+        intent.putExtra("USER_TYPE", userType);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

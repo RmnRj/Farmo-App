@@ -20,37 +20,23 @@ public class SessionManager {
     }
 
     /**
-     * Saves session data. If keepLogin is false, it stores empty strings
-     * to ensure no sensitive data persists beyond the current session.
+     * Saves the session. We no longer need the 'keepLogin' boolean
+     * because we assume persistence on every successful login.
      */
-//    public void saveSession(String userId, String userType, String token, String refreshToken, boolean keepLogin) {
-//        if (keepLogin) {
-//            editor.putString(KEY_USER_ID, userId);
-//            editor.putString(KEY_USER_TYPE, userType);
-//            editor.putString(KEY_AUTH_TOKEN, token);
-//            editor.putString(KEY_REFRESH_TOKEN, refreshToken);
-//            editor.putBoolean(KEY_IS_LOGGED_IN, true);
-//        } else {
-//            // If keep login is not checked, we store empty/null
-//            editor.putString(KEY_USER_ID, "");
-//            editor.putString(KEY_USER_TYPE, "");
-//            editor.putString(KEY_AUTH_TOKEN, "");
-//            editor.putString(KEY_REFRESH_TOKEN, "");
-//            editor.putBoolean(KEY_IS_LOGGED_IN, false);
-//        }
-//        editor.apply();
-//    }
     public void saveSession(String userId, String userType, String token,
-                            String refreshToken, boolean keepLogin) {
-        // Always save the data regardless of keepLogin
+                            String refreshToken, boolean isLoggedIn) {
         editor.putString(KEY_USER_ID, userId);
         editor.putString(KEY_USER_TYPE, userType);
         editor.putString(KEY_AUTH_TOKEN, token);
         editor.putString(KEY_REFRESH_TOKEN, refreshToken);
-        editor.putBoolean(KEY_IS_LOGGED_IN, true); // ← Always true after login
+        editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
         editor.apply();
     }
 
+    /**
+     * Returns true if there is an active session.
+     * This triggers the 'performTokenLogin' in your LoginActivity.
+     */
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGED_IN, false);
     }
@@ -71,6 +57,10 @@ public class SessionManager {
         return pref.getString(KEY_REFRESH_TOKEN, "");
     }
 
+    /**
+     * Clears all data. Call this when 'loginWithToken' fails
+     * or when the user clicks 'Logout'.
+     */
     public void clearSession() {
         editor.clear();
         editor.apply();
