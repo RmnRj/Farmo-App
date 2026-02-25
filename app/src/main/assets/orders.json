@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ORD001",
+    "customerName": "John Doe",
+    "userId": "USER1001",
+    "product": "Organic Tomatoes",
+    "quantity": 50,
+    "totalPrice": 125.50,
+    "status": "Pending",
+    "date": "2025-02-20",
+    "shippingAddress": "123 Farm Road, Springfield, IL 62701",
+    "expectedDeliveryDate": "2025-02-25"
+  },
+  {
+    "id": "ORD002",
+    "customerName": "Jane Smith",
+    "userId": "USER1002",
+    "product": "Fresh Carrots",
+    "quantity": 30,
+    "totalPrice": 45.00,
+    "status": "Accepted",
+    "date": "2025-02-19",
+    "shippingAddress": "456 Green Ave, Chicago, IL 60601",
+    "expectedDeliveryDate": "2025-02-24"
+  },
+  {
+    "id": "ORD003",
+    "customerName": "Bob Wilson",
+    "userId": "USER1003",
+    "product": "Potatoes",
+    "quantity": 100,
+    "totalPrice": 80.00,
+    "status": "Rejected",
+    "date": "2025-02-18",
+    "shippingAddress": "789 Valley Rd, Peoria, IL 61602",
+    "expectedDeliveryDate": "2025-02-23"
+  },
+  {
+    "id": "ORD004",
+    "customerName": "Alice Brown",
+    "userId": "USER1004",
+    "product": "Lettuce",
+    "quantity": 25,
+    "totalPrice": 37.50,
+    "status": "Pending",
+    "date": "2025-02-21",
+    "shippingAddress": "321 Hill St, Rockford, IL 61101",
+    "expectedDeliveryDate": "2025-02-26"
+  }
+]

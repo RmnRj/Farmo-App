@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/ripple_row.xml -->
+<!-- Use this as android:background on clickable contact rows -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#1A2E7D32">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F9FBF9" />
+            <corners android:radius="6dp" />
+        </shape>
+    </item>
+</ripple>

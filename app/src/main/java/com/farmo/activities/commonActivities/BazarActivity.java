@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.farmo.R;
-import com.farmo.utils.BazarProduct;
-import com.farmo.utils.BazarProductAdapter;
+import com.farmo.adapter.OrderAdapter;
+import com.farmo.model.BazarProduct;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +41,7 @@ public class BazarActivity extends AppCompatActivity {
     private Spinner spinnerSort, spinnerFarmer;
 
     // Data Lists
-    private BazarProductAdapter adapter;
+    private OrderAdapter.BazarProductAdapter adapter;
     private List<BazarProduct> allProducts = new ArrayList<>();       // Original source
     private List<BazarProduct> filteredProducts = new ArrayList<>();  // Filtered/Sorted subset
     private List<BazarProduct> displayedProducts = new ArrayList<>(); // Pagination subset
@@ -70,7 +70,7 @@ public class BazarActivity extends AppCompatActivity {
         spinnerFarmer = findViewById(R.id.spinnerFarmer);
 
         rvProducts.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new BazarProductAdapter(this, displayedProducts);
+        adapter = new OrderAdapter.BazarProductAdapter(this, displayedProducts);
         rvProducts.setAdapter(adapter);
 
         btnBack.setOnClickListener(v -> finish());

@@ -2,6 +2,7 @@ package com.farmo.activities.farmerActivities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
@@ -28,6 +29,7 @@ import com.farmo.network.Dashboard.DashboardService;
 import com.farmo.network.Dashboard.RefreshWallet;
 import com.farmo.network.RetrofitClient;
 import com.farmo.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -119,7 +121,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
                 lp.addRule(RelativeLayout.CENTER_IN_PARENT);
                 progressBar.setLayoutParams(lp);
                 progressBar.setIndeterminateTintList(
-                        android.content.res.ColorStateList.valueOf(Color.WHITE));
+                        ColorStateList.valueOf(Color.WHITE));
 
                 loadingOverlay.addView(progressBar);
 
@@ -235,6 +237,7 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     private void setupUI() {
         // FIX 5: Null-check all views before use to prevent NPE crashes
         ImageView ivVisibility = findViewById(R.id.ivVisibility);
@@ -271,8 +274,36 @@ public class FarmerDashboardActivity extends AppCompatActivity {
         if (ivRefresh != null) {
             ivRefresh.setOnClickListener(v -> refreshWalletUI());
         }
-    }
 
+        findViewById(R.id.idOrderAnalystics).setOnClickListener(v -> 
+            gotoFarmerOrderManagement());
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.navigation_orders) {
+                gotoFarmerOrderManagement();
+                return true;
+            } else if (id == R.id.navigation_home) {
+                // Handle Home click
+                return true;
+            } else if (id == R.id.navigation_products) {
+                // Handle Products click
+                return true;
+            }
+
+            return false;
+        });
+
+
+    }
+    
+    private void gotoFarmerOrderManagement(){
+        Intent intent = new Intent(this, FarmerOrderManagementActivity.class);
+        startActivity(intent);
+    }
     @SuppressLint("SetTextI18n")
     public void updateGreeting(String name) {
         int timeOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
