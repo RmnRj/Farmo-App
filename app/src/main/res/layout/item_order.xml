@@ -1,193 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginHorizontal="8dp"
-    android:layout_marginVertical="4dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="3dp">
 
-    <!-- Main Order Card -->
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="2dp">
+        android:orientation="vertical"
+        android:padding="12dp">
 
+        <!-- Row 1: Order ID + Date -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-            <!-- Row 1: Order ID + Status badge -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvOrderId"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:text="Order #1001"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/topical_forest" />
 
-                <TextView
-                    android:id="@+id/tvOrderId"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="#333333" />
-
-                <TextView
-                    android:id="@+id/tvStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="3dp"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Row 2: Product + Qty -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvOrderDate"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="6dp">
+                android:text="2026-02-26"
+                android:textSize="11sp"
+                android:textColor="#9E9E9E" />
 
-                <TextView
-                    android:id="@+id/tvProduct"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="13sp"
-                    android:textColor="#555555" />
-
-                <TextView
-                    android:id="@+id/tvQuantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#555555" />
-            </LinearLayout>
-
-            <!-- Row 3: Date + Price -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-
-                <TextView
-                    android:id="@+id/tvDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="12sp"
-                    android:textColor="#888888" />
-
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32" />
-            </LinearLayout>
-
-            <!-- Expandable Details Section -->
-            <LinearLayout
-                android:id="@+id/layoutDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp"
-                android:padding="12dp"
-                android:background="#F5F5F5"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Order Details"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#333333"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvDetailName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#555555"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvDetailUserId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#555555"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvDetailAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#555555"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvDetailDelivery"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="#555555"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Action Buttons for Pending Orders -->
-                <LinearLayout
-                    android:id="@+id/layoutButtons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone">
-
-                    <Button
-                        android:id="@+id/btnReject"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reject"
-                        android:textColor="#FFFFFF"
-                        android:backgroundTint="#F44336"
-                        android:layout_marginEnd="8dp"
-                        android:paddingHorizontal="24dp" />
-
-                    <Button
-                        android:id="@+id/btnAccept"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accept"
-                        android:textColor="#FFFFFF"
-                        android:backgroundTint="#4CAF50"
-                        android:paddingHorizontal="24dp" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <!-- Customer Info Below Card -->
-    <TextView
-        android:id="@+id/tvCustomerInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="4dp"
-        android:paddingVertical="4dp"
-        android:textSize="12sp"
-        android:textColor="#777777"
-        android:textStyle="italic" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp" />
 
-</LinearLayout>
+        <!-- Consumer name -->
+        <TextView
+            android:id="@+id/tvConsumerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Consumer: John Doe"
+            android:textSize="13sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Product name -->
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Product: Fresh Tomatoes"
+            android:textSize="13sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Row: Quantity + Total -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/tvQuantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Qty: 2 kg"
+                android:textSize="12sp"
+                android:textColor="#555555" />
+
+            <TextView
+                android:id="@+id/tvTotalAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rs. 160"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#F57C00" />
+
+        </LinearLayout>
+
+        <!-- Status badge -->
+        <TextView
+            android:id="@+id/tvOrderStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Pending"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@color/topical_forest"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+
+        <!-- Accept / Reject buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:text="Reject"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:backgroundTint="#D32F2F"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Accept"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/topical_forest"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

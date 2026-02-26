@@ -27,32 +27,28 @@ import java.util.List;
 
 public class FarmerOrderManagementActivity extends AppCompatActivity {
 
-    // ─── Constants ───────────────────────────────────────────────────────────
-    private static final int PAGE_SIZE = 20;
+    // ─── Constants ────────────────────────────────────────────────────────────
+    private static final int PAGE_SIZE = 10;
 
-    // ─── UI ──────────────────────────────────────────────────────────────────
+    // ─── UI ───────────────────────────────────────────────────────────────────
     private RecyclerView rvOrders;
-    private Button btnLoadMore;
-    private TextView tvOrderType;
-    private Spinner spinnerSort;
+    private Button       btnLoadMore;
+    private TextView     tvOrderType;
+    private Spinner      spinnerSort;
 
     // ─── Data ─────────────────────────────────────────────────────────────────
-    /** Full data loaded from JSON (all records, all statuses). */
-    private List<Order> allOrders = new ArrayList<>();
+    /** Full list loaded from JSON — never modified after load. */
+    private final List<Order> allOrders      = new ArrayList<>();
 
-    /** Filtered view according to selected spinner option. */
-    private List<Order> filteredOrders = new ArrayList<>();
+    /** Subset of allOrders matching the current filter. */
+    private final List<Order> filteredOrders = new ArrayList<>();
 
     /** Items currently shown in the RecyclerView. */
-    private List<Order> displayedOrders = new ArrayList<>();
+    private final List<Order> displayedOrders = new ArrayList<>();
 
     private OrderAdapter adapter;
-
-    /** How many items from filteredOrders have been shown so far. */
-    private int currentOffset = 0;
-
-    /** Currently selected filter ("All", "Pending", "Rejected", "Accepted"). */
-    private String currentFilter = "All";
+    private int          currentOffset = 0;
+    private String       currentFilter = "All";
 
     // ─────────────────────────────────────────────────────────────────────────
     @Override
@@ -64,14 +60,16 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
         setupSpinner();
         setupRecyclerView();
 
-        // Step 1 – load raw data from JSON
+        // 1. Load raw data from JSON into allOrders
         loadOrdersFromJson();
 
-        // Step 2 – apply default filter ("All") and display first page
+        // 2. Apply default "All" filter and render first page
         applyFilterAndReset();
     }
 
-    // ─── View wiring ──────────────────────────────────────────────────────────
+    // =========================================================================
+    //  VIEW WIRING
+    // =========================================================================
 
     private void initViews() {
         rvOrders    = findViewById(R.id.rvProducts);
@@ -80,12 +78,12 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
         spinnerSort = findViewById(R.id.spinnerSort);
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-
         btnLoadMore.setOnClickListener(v -> loadNextPage());
     }
 
     private void setupSpinner() {
         String[] filterOptions = {"All", "Pending", "Accepted", "Rejected"};
+
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -112,7 +110,6 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
             public void onAccept(Order order, int position) {
                 handleAcceptOrder(order, position);
             }
-
             @Override
             public void onReject(Order order, int position) {
                 handleRejectOrder(order, position);
@@ -124,77 +121,76 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
         rvOrders.setNestedScrollingEnabled(false);
     }
 
-    // ─── Order Actions ────────────────────────────────────────────────────────
+    // =========================================================================
+    //  ORDER ACTIONS
+    // =========================================================================
 
     private void handleAcceptOrder(Order order, int position) {
         order.setStatus("Accepted");
+        syncStatusToAllOrders(order.getId(), "Accepted");
         adapter.notifyItemChanged(position);
-
-        // Update in allOrders and filteredOrders as well
-        updateOrderStatus(order.getId(), "Accepted");
-
         Toast.makeText(this, "Order " + order.getId() + " accepted", Toast.LENGTH_SHORT).show();
 
-        // If filter is set to "Pending", remove this item after a delay
         if (currentFilter.equals("Pending")) {
-            rvOrders.postDelayed(() -> {
-                displayedOrders.remove(position);
-                filteredOrders.remove(order);
-                updateUI();
-            }, 500);
+            removeOrderAfterDelay(order, position);
         }
     }
 
     private void handleRejectOrder(Order order, int position) {
         order.setStatus("Rejected");
+        syncStatusToAllOrders(order.getId(), "Rejected");
         adapter.notifyItemChanged(position);
-
-        // Update in allOrders and filteredOrders as well
-        updateOrderStatus(order.getId(), "Rejected");
-
         Toast.makeText(this, "Order " + order.getId() + " rejected", Toast.LENGTH_SHORT).show();
 
-        // If filter is set to "Pending", remove this item after a delay
         if (currentFilter.equals("Pending")) {
-            rvOrders.postDelayed(() -> {
-                displayedOrders.remove(position);
-                filteredOrders.remove(order);
-                updateUI();
-            }, 500);
+            removeOrderAfterDelay(order, position);
         }
     }
 
-    private void updateOrderStatus(String orderId, String newStatus) {
-        for (Order order : allOrders) {
-            if (order.getId().equals(orderId)) {
-                order.setStatus(newStatus);
+    /** Removes an order from the displayed + filtered lists after a short delay. */
+    private void removeOrderAfterDelay(Order order, int position) {
+        rvOrders.postDelayed(() -> {
+            if (position < displayedOrders.size()) {
+                displayedOrders.remove(position);
+                adapter.notifyItemRemoved(position);
+            }
+            filteredOrders.remove(order);
+            refreshUI();
+        }, 500);
+    }
+
+    /** Keeps allOrders in sync when a status changes. */
+    private void syncStatusToAllOrders(String orderId, String newStatus) {
+        for (Order o : allOrders) {
+            if (o.getId().equals(orderId)) {
+                o.setStatus(newStatus);
                 break;
             }
         }
     }
 
-    // ─── DATA LAYER ───────────────────────────────────────────────────────────
+    // =========================================================================
+    //  DATA LAYER  — loads from JSON, no UI changes here
+    // =========================================================================
 
     /**
-     * Loads ALL orders from the local assets/orders.json file.
+     * Reads assets/orders.json and populates {@code allOrders}.
+     * Pure data operation — does NOT touch any view.
      */
     private void loadOrdersFromJson() {
         allOrders.clear();
         try {
-            // Read file from assets/orders.json
-            InputStream is = getAssets().open("orders.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
+            InputStream is     = getAssets().open("orders.json");
+            byte[]      buffer = new byte[is.available()];
             //noinspection ResultOfMethodCallIgnored
             is.read(buffer);
             is.close();
 
-            String jsonString = new String(buffer, StandardCharsets.UTF_8);
-            JSONArray jsonArray = new JSONArray(jsonString);
+            JSONArray jsonArray = new JSONArray(new String(buffer, StandardCharsets.UTF_8));
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
-                Order order = new Order(
+                allOrders.add(new Order(
                         obj.getString("id"),
                         obj.getString("customerName"),
                         obj.getString("product"),
@@ -202,24 +198,26 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
                         obj.getDouble("totalPrice"),
                         obj.getString("status"),
                         obj.getString("date"),
-                        obj.optString("userId", "USER" + (1000 + i)),
-                        obj.optString("shippingAddress", "123 Main St, City, State"),
-                        obj.optString("expectedDeliveryDate", "2025-03-15")
-                );
-                allOrders.add(order);
+                        obj.optString("userId",              "USER" + (1000 + i)),
+                        obj.optString("shippingAddress",     "N/A"),
+                        obj.optString("expectedDeliveryDate","N/A")
+                ));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to load orders: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to load orders: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
-    // ─── FILTER + PAGINATION ──────────────────────────────────────────────────
+    // =========================================================================
+    //  FILTER + PAGINATION
+    // =========================================================================
 
     /**
-     * Applies the current filter to allOrders, resets pagination,
-     * and loads the first page.
+     * Rebuilds {@code filteredOrders} from {@code allOrders} based on
+     * {@code currentFilter}, resets pagination, then loads the first page.
      */
     private void applyFilterAndReset() {
         filteredOrders.clear();
@@ -231,11 +229,6 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
             }
         }
 
-        // Update the section title label
-        String label = currentFilter.equals("All") ? "All Orders" : currentFilter + " Orders";
-        updateOrderTypeLabel(label);
-
-        // Clear the displayed list and show first page
         displayedOrders.clear();
         adapter.notifyDataSetChanged();
 
@@ -243,48 +236,46 @@ public class FarmerOrderManagementActivity extends AppCompatActivity {
     }
 
     /**
-     * Appends the next PAGE_SIZE items from filteredOrders into displayedOrders.
+     * Appends the next PAGE_SIZE items from {@code filteredOrders}
+     * into {@code displayedOrders} and refreshes the UI.
      */
     private void loadNextPage() {
         int start = currentOffset;
         int end   = Math.min(start + PAGE_SIZE, filteredOrders.size());
 
         if (start >= filteredOrders.size()) {
-            Toast.makeText(this, "No more orders to load.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No more orders.", Toast.LENGTH_SHORT).show();
+            btnLoadMore.setVisibility(View.GONE);
             return;
         }
 
-        List<Order> nextPage = filteredOrders.subList(start, end);
-        displayedOrders.addAll(nextPage);
+        displayedOrders.addAll(filteredOrders.subList(start, end));
         currentOffset = end;
 
-        updateUI();
+        refreshUI();
     }
 
-    // ─── UI LAYER ─────────────────────────────────────────────────────────────
+    // =========================================================================
+    //  UI LAYER  — updates views only, no data loading here
+    // =========================================================================
 
     /**
-     * Refreshes the RecyclerView and toggles the Load More button visibility.
+     * Refreshes the RecyclerView, the header label, and the
+     * "See More" button visibility.
+     * Pure UI operation — does NOT touch allOrders or filteredOrders.
      */
-    private void updateUI() {
+    private void refreshUI() {
         adapter.notifyDataSetChanged();
 
+        // "See More" button — visible only when more pages exist
         boolean hasMore = currentOffset < filteredOrders.size();
         btnLoadMore.setVisibility(hasMore ? View.VISIBLE : View.GONE);
 
-        if (displayedOrders.isEmpty()) {
-            tvOrderType.setText(currentFilter.equals("All") ? "All Orders (0)" :
-                    currentFilter + " Orders (0)");
-        } else {
-            String label = currentFilter.equals("All") ? "All Orders" : currentFilter + " Orders";
-            tvOrderType.setText(label + " (" + filteredOrders.size() + ")");
-        }
-    }
-
-    /**
-     * Updates only the order-type label TextView.
-     */
-    private void updateOrderTypeLabel(String label) {
+        // Section label
+        String base  = currentFilter.equals("All") ? "All Orders" : currentFilter + " Orders";
+        String label = filteredOrders.isEmpty()
+                ? base + " (0)"
+                : base + " (" + displayedOrders.size() + " of " + filteredOrders.size() + ")";
         tvOrderType.setText(label);
     }
 }

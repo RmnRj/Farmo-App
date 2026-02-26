@@ -101,4 +101,13 @@
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="wallet">Wallet</string>
     <string name="transaction_statements">Transaction Statements</string>
+
+    <!-- Change Password Dialog -->
+    <string name="change_login_password">Change Login Password</string>
+    <string name="password_rules_title">Choose a strong password by\nfollowing these rules:</string>
+    <string name="password_rules_content">1. Password must be 8-15 characters only\n2. Password must contain alpha-numeric value with at least 1 character, 1 number and 1 special character.</string>
+    <string name="current_password_label">Current Password</string>
+    <string name="new_password_label">New Password</string>
+    <string name="confirm_new_password_label">Confirm New Password</string>
+    <string name="proceed">Proceed</string>
 </resources>

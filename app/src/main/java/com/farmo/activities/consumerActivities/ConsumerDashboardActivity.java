@@ -26,10 +26,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.farmo.R;
 import com.farmo.activities.authActivities.LoginActivity;
 import com.farmo.activities.commonActivities.ProfileActivity;
+import com.farmo.activities.commonActivities.SettingsActivity;
 import com.farmo.network.Dashboard.DashboardService;
 import com.farmo.network.Dashboard.RefreshWallet;
 import com.farmo.network.RetrofitClient;
 import com.farmo.utils.SessionManager;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -367,6 +369,21 @@ public class ConsumerDashboardActivity extends AppCompatActivity {
         View ivRefresh = findViewById(R.id.ivRefresh);
         if (ivRefresh != null) {
             ivRefresh.setOnClickListener(v -> refreshWalletUI());
+        }
+
+        // Bottom Navigation listener for "More"
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if (bottomNavigationView != null) {
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.navigation_more) {
+                    Intent intent = new Intent(ConsumerDashboardActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                // Handle other navigation items if needed
+                return false;
+            });
         }
     }
 

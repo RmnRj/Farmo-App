@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_topical_forest"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/light_topical_forest">
 
-    <!-- Top Header Bar -->
+    <!-- Toolbar: Back | "Bazar" (center) | item count (right) -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,54 +21,98 @@
             android:src="@drawable/ic_back_arrow"
             app:tint="@color/white"
             android:layout_centerVertical="true"
-            android:contentDescription="Back" />
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"/>
 
         <TextView
-            android:id="@+id/tvCategoryTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Bazar"
+            android:text="Bazar [Market Place]"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- Scrollable Content -->
-    <androidx.core.widget.NestedScrollView
+    <!-- Sort & Filter spinners -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="8dp"
+        android:elevation="2dp">
+
+        <Spinner
+            android:id="@+id/spinnerSort"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:spinnerMode="dropdown" />
+
+        <Spinner
+            android:id="@+id/spinnerFarmer"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:spinnerMode="dropdown" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Loading indicator -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/topical_forest"
+        android:visibility="gone"
+        android:layout_marginTop="20dp" />
+
+    <!-- Scrollable product grid -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:orientation="vertical">
 
-            <!-- Product Grid -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvProducts"
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:padding="8dp"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false" />
+                android:clipToPadding="false" />
 
-            <!-- View More Button — centered -->
+            <!-- See More button -->
             <Button
-                android:id="@+id/btnLoadMore"
+                android:id="@+id/btnShowMore"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:text="View More Products"
+                android:layout_marginBottom="28dp"
                 android:backgroundTint="@color/topical_forest"
+                android:text="See More ▼"
                 android:textColor="@color/white"
                 android:textSize="14sp"
+                android:textStyle="bold"
+                android:paddingStart="36dp"
+                android:paddingEnd="36dp"
                 android:visibility="gone" />
 
         </LinearLayout>

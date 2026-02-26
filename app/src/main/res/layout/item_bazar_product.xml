@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -13,13 +17,16 @@
         android:orientation="vertical"
         android:padding="8dp">
 
+        <!-- Product Image -->
         <ImageView
             android:id="@+id/ivProductImage"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="140dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/vegetables" />
+            android:src="@drawable/vegetables"
+            android:contentDescription="Product Image" />
 
+        <!-- Product Name -->
         <TextView
             android:id="@+id/tvProductName"
             android:layout_width="match_parent"
@@ -27,10 +34,11 @@
             android:layout_marginTop="8dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="Fresh Organic Vegetables from Local Farm"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:text="Fresh Organic Vegetables"
+            android:textColor="@android:color/black"
+            android:textSize="13sp" />
 
+        <!-- Price & Discount Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,19 +52,22 @@
                 android:layout_height="wrap_content"
                 android:text="Rs. 150"
                 android:textColor="#F57C00"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvProductDiscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="6dp"
                 android:text="-15%"
-                android:textColor="@color/medium_gray"
-                android:textSize="12sp" />
+                android:textColor="#9E9E9E"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
+        <!-- Rating Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,18 +80,22 @@
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:isIndicator="true"
                 android:numStars="5"
                 android:rating="4.5"
-                android:progressTint="#FFC107" />
+                android:progressTint="#FFC107"
+                android:stepSize="0.1" />
 
             <TextView
                 android:id="@+id/tvReviewCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="(128)"
-                android:textColor="@color/medium_gray"
+                android:text="(0)"
+                android:textColor="#9E9E9E"
                 android:textSize="11sp" />
+
         </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

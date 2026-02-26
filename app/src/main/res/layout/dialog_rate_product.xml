@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="26dp"
+    android:gravity="center">
+
+    <!-- Icon -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⭐"
+        android:textSize="38sp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rate this Product"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#111D15"
+        android:layout_marginBottom="5dp"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share your experience with others"
+        android:textSize="13sp"
+        android:textColor="#7A8C80"
+        android:gravity="center"
+        android:layout_marginBottom="22dp"/>
+
+    <!-- Stars -->
+    <RatingBar
+        android:id="@+id/dialogRatingBar"
+        style="?android:attr/ratingBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1"
+        android:rating="0"
+        android:progressTint="#F4A100"
+        android:layout_marginBottom="22dp"/>
+
+    <!-- Review text input -->
+    <EditText
+        android:id="@+id/etReviewText"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:hint="Write your thoughts (optional)…"
+        android:padding="12dp"
+        android:textSize="14sp"
+        android:textColor="#111D15"
+        android:textColorHint="#CCCCCC"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Submit -->
+    <TextView
+        android:id="@+id/tvSubmitRating"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="Submit Review"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <!-- Cancel -->
+    <TextView
+        android:id="@+id/tvCancelRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textSize="13sp"
+        android:textColor="#9EADA4"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"/>
+
+</LinearLayout>

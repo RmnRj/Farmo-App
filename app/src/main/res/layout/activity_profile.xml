@@ -192,17 +192,21 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Logout Button -->
-            <Button
+            <!-- Logout Section -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:backgroundTint="#D32F2F"
+                android:layout_marginTop="8dp"
                 android:text="Logout"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
+                android:textColor="#D32F2F"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white"
+                app:strokeColor="#D32F2F"
+                app:strokeWidth="2dp"
+                app:cornerRadius="12dp"/>
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -337,7 +337,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Order Analytics"
+                                    android:text="Pending Order"
                                     android:textSize="12sp"
                                     android:textColor="@color/topical_forest" />
 
@@ -919,19 +919,8 @@
                             <com.google.android.material.button.MaterialButton
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="❤ 54"
-                                android:backgroundTint="#FFF1F2"
-                                android:textColor="#EF4444"
-                                android:layout_marginEnd="8dp"
-                                style="@style/Widget.Material3.Button.TonalButton"
-                                app:cornerRadius="20dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
                                 android:layout_weight="1.2"
-                                android:text="🛒 Order"
+                                android:text="🛒 Request Order"
                                 android:backgroundTint="@color/topical_forest"
                                 android:textColor="@color/white"
                                 app:cornerRadius="20dp" />
@@ -958,6 +947,6 @@
         android:background="@drawable/bottom_nav_popped_background"
         android:elevation="8dp"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu_consumer" />
 
 </RelativeLayout>
