@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F8F9FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Top Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@drawable/header_gradient_bg"
+            android:gravity="center_vertical"
+            android:elevation="4dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_back_arrow"
+                android:contentDescription="Back"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="KYC Verification"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:layout_marginEnd="28dp" />
+
+        </LinearLayout>
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Info Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_verified_shield"
+                            android:contentDescription="Verified"
+                            app:tint="#4CAF50" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="12dp"
+                            android:text="Verify Your Identity"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Please upload clear photos of your document. Ensure all text is readable."
+                        android:textSize="14sp"
+                        android:textColor="#757575" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Document Type -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Document Type"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="12dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <RadioGroup
+                    android:id="@+id/rgDocumentType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <RadioButton
+                        android:id="@+id/rbCitizenship"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Citizenship Card"
+                        android:textSize="15sp"
+                        android:textColor="#212121"
+                        android:checked="true"
+                        android:padding="12dp"
+                        android:buttonTint="#4CAF50" />
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginStart="16dp" android:layout_marginEnd="16dp" />
+
+                    <RadioButton
+                        android:id="@+id/rbPassport"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Passport"
+                        android:textSize="15sp"
+                        android:textColor="#212121"
+                        android:padding="12dp"
+                        android:buttonTint="#4CAF50" />
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginStart="16dp" android:layout_marginEnd="16dp" />
+
+                    <RadioButton
+                        android:id="@+id/rbDrivingLicence"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Driving Licence"
+                        android:textSize="15sp"
+                        android:textColor="#212121"
+                        android:padding="12dp"
+                        android:buttonTint="#4CAF50" />
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginStart="16dp" android:layout_marginEnd="16dp" />
+
+                    <RadioButton
+                        android:id="@+id/rbNationalId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="National ID Card"
+                        android:textSize="15sp"
+                        android:textColor="#212121"
+                        android:padding="12dp"
+                        android:buttonTint="#4CAF50" />
+
+                </RadioGroup>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Document Number -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Document Number *"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilDocumentNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:boxStrokeColor="#4CAF50"
+                app:hintTextColor="#4CAF50"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:errorEnabled="true"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etDocumentNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter document number"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="25"
+                    android:textSize="15sp"
+                    android:textColor="#212121"
+                    android:padding="16dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- ===== FRONT IMAGE ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Document Front Side *"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFrontView"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- ✅ FIX 2: Full quality image display -->
+                    <ImageView
+                        android:id="@+id/ivFrontView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Front view of document" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutFrontPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:background="@drawable/dashed_border_bg">
+
+                        <ImageView
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:src="@drawable/ic_upload_document"
+                            android:contentDescription="Upload"
+                            app:tint="#4CAF50" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upload Front Side"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginTop="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap to select image"
+                            android:textSize="13sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="4dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutFrontOverlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center|bottom"
+                        android:padding="12dp"
+                        android:background="@drawable/image_overlay_gradient"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/btnViewFront"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="View"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_view_bg"
+                            android:drawableStart="@drawable/ic_view"
+                            android:drawablePadding="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                        <Button
+                            android:id="@+id/btnRemoveFront"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="Remove"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_remove_bg"
+                            android:drawableStart="@drawable/ic_delete"
+                            android:drawablePadding="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!--
+                ✅ FIX 3: REMOVED tvFrontFileSize TextView completely.
+                Replaced with ImageView showing green checkmark ONLY — no size text.
+            -->
+            <ImageView
+                android:id="@+id/ivFrontCheck"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                app:tint="#4CAF50" />
+
+            <!-- ===== BACK IMAGE ===== -->
+            <TextView
+                android:id="@+id/tvBackLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Document Back Side *"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardBackView"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivBackView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Back view of document" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutBackPlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:background="@drawable/dashed_border_bg">
+
+                        <ImageView
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:src="@drawable/ic_upload_document"
+                            android:contentDescription="Upload"
+                            app:tint="#2196F3" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upload Back Side"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginTop="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap to select image"
+                            android:textSize="13sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvBackOptional"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Optional for this document"
+                            android:textSize="11sp"
+                            android:textColor="#757575"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/chip_info_bg"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutBackOverlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center|bottom"
+                        android:padding="12dp"
+                        android:background="@drawable/image_overlay_gradient"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/btnViewBack"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="View"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_view_bg"
+                            android:drawableStart="@drawable/ic_view"
+                            android:drawablePadding="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                        <Button
+                            android:id="@+id/btnRemoveBack"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="Remove"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_remove_bg"
+                            android:drawableStart="@drawable/ic_delete"
+                            android:drawablePadding="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ✅ FIX 3: Checkmark only, no size text -->
+            <ImageView
+                android:id="@+id/ivBackCheck"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                app:tint="#4CAF50" />
+
+            <!-- ===== SELFIE IMAGE ===== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selfie with Document *"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#212121"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSelfieView"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginBottom="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivSelfieView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Selfie with document" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutSelfiePlaceholder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:background="@drawable/dashed_border_bg">
+
+                        <ImageView
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:src="@drawable/ic_selfie"
+                            android:contentDescription="Selfie"
+                            app:tint="#FF9800" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upload Selfie"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#212121"
+                            android:layout_marginTop="12dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hold your document next to your face"
+                            android:textSize="13sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutSelfieOverlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center|bottom"
+                        android:padding="12dp"
+                        android:background="@drawable/image_overlay_gradient"
+                        android:visibility="gone">
+
+                        <Button
+                            android:id="@+id/btnViewSelfie"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="View"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_view_bg"
+                            android:drawableStart="@drawable/ic_view"
+                            android:drawablePadding="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                        <Button
+                            android:id="@+id/btnRemoveSelfie"
+                            android:layout_width="0dp"
+                            android:layout_height="42dp"
+                            android:layout_weight="1"
+                            android:text="Remove"
+                            android:textSize="13sp"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="@drawable/button_remove_bg"
+                            android:drawableStart="@drawable/ic_delete"
+                            android:drawablePadding="8dp"
+                            android:stateListAnimator="@null"
+                            android:elevation="0dp" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- ✅ FIX 3: Checkmark only, no size text -->
+            <ImageView
+                android:id="@+id/ivSelfieCheck"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_circle"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                app:tint="#4CAF50" />
+
+            <!-- Terms Checkbox -->
+            <CheckBox
+                android:id="@+id/cbTerms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="I confirm that the information provided is accurate and the documents are genuine."
+                android:textSize="13sp"
+                android:textColor="#424242"
+                android:buttonTint="#4CAF50"
+                android:layout_marginBottom="20dp" />
+
+            <!--
+                ✅ FIX 4: Submit button uses @drawable/button_submit_selector
+                which gives GREEN (#1B5E20) when enabled and GRAY when disabled.
+                Remove android:background="@drawable/button_primary_gradient"
+                and replace with the selector below.
+            -->
+            <Button
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:text="Submit for Verification"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:enabled="false"
+                android:stateListAnimator="@null"
+                android:elevation="0dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:indeterminate="false"
+                android:max="100"
+                android:progressTint="#4CAF50"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/color/btn_submit_selector.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Enabled: same dark green as View/Remove buttons -->
+    <item android:state_enabled="true" android:color="#1B5E20" />
+
+    <!-- Disabled: gray -->
+    <item android:state_enabled="false" android:color="#BDBDBD" />
+
+</selector>

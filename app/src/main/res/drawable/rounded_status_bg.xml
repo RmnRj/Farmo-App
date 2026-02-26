@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/rounded_status_bg.xml -->
+<!-- Background is set programmatically in the adapter for dynamic color.
+     This shape just defines the rounded corners. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="12dp" />
+    <!-- Color overridden in code -->
+    <solid android:color="#FF9800" />
+</shape>
