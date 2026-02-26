@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ========== DOCUMENT FRONT SIDE ========== -->
+        <TextView
+            android:id="@+id/tvFrontLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Document Front Side *"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:layout_marginBottom="8dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Empty Upload Box (Front) -->
+            <LinearLayout
+                android:id="@+id/layoutFrontUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="40dp"
+                android:paddingBottom="40dp"
+                android:background="@drawable/bg_upload_box"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_blue_rounded"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Front Side"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to select image"
+                    android:textSize="13sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <!-- Image Preview Box (Front) — GONE by default, show after image picked -->
+            <LinearLayout
+                android:id="@+id/layoutFrontPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_upload_box"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivFrontPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="false" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnFrontView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="View"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        android:letterSpacing="0.02"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/btnFrontRemove"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Remove"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        android:letterSpacing="0.02"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- ✅ Checkmark only — NO file size text (FIX 3) -->
+        <ImageView
+            android:id="@+id/ivFrontCheck"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_check_circle"
+            android:layout_marginTop="6dp"
+            android:visibility="gone" />
+
+        <!-- ========== DOCUMENT BACK SIDE ========== -->
+        <TextView
+            android:id="@+id/tvBackLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Document Back Side *"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Empty Upload Box (Back) -->
+            <LinearLayout
+                android:id="@+id/layoutBackUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="40dp"
+                android:paddingBottom="40dp"
+                android:background="@drawable/bg_upload_box"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_blue_rounded"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Back Side"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to select image"
+                    android:textSize="13sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <!-- Image Preview Box (Back) -->
+            <LinearLayout
+                android:id="@+id/layoutBackPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_upload_box"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivBackPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="false" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnBackView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="View"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/btnBackRemove"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Remove"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- ✅ Checkmark only (FIX 3) -->
+        <ImageView
+            android:id="@+id/ivBackCheck"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_check_circle"
+            android:layout_marginTop="6dp"
+            android:visibility="gone" />
+
+        <!-- ========== SELFIE WITH DOCUMENT ========== -->
+        <TextView
+            android:id="@+id/tvSelfieLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selfie with Document *"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Empty Upload Box (Selfie) -->
+            <LinearLayout
+                android:id="@+id/layoutSelfieUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="40dp"
+                android:paddingBottom="40dp"
+                android:background="@drawable/bg_upload_box"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_blue_rounded"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Selfie with Document"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:layout_marginTop="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to select image"
+                    android:textSize="13sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <!-- Image Preview Box (Selfie) -->
+            <LinearLayout
+                android:id="@+id/layoutSelfiePreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_upload_box"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivSelfiePreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="false" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnSelfieView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="View"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/btnSelfieRemove"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Remove"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:backgroundTint="#1B5E20"
+                        style="?android:attr/borderlessButtonStyle" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- ✅ Checkmark only (FIX 3) -->
+        <ImageView
+            android:id="@+id/ivSelfieCheck"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_check_circle"
+            android:layout_marginTop="6dp"
+            android:visibility="gone" />
+
+        <!-- ========== CONFIRMATION CHECKBOX ========== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            android:gravity="top">
+
+            <CheckBox
+                android:id="@+id/checkBoxConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="#1B5E20"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="I confirm that the information provided is accurate and the documents are genuine."
+                android:textSize="14sp"
+                android:textColor="#212121"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center_vertical" />
+
+        </LinearLayout>
+
+        <!-- ========== SUBMIT BUTTON ========== -->
+        <!-- ✅ FIX 4: Same green color as View/Remove buttons -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="32dp"
+            android:text="Submit for Verification"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:letterSpacing="0.03"
+            android:enabled="false"
+            android:backgroundTint="@color/btn_submit_selector"
+            android:stateListAnimator="@null"
+             />
+    </LinearLayout>
+</ScrollView>

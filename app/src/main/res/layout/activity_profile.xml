@@ -192,8 +192,44 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+<<<<<<< HEAD
             <!-- Logout Section -->
             <com.google.android.material.button.MaterialButton
+=======
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+            <Button
+                android:id="@+id/btn_verification"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/greenButton"
+                android:text="Verification"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_margin="10dp"/>
+
+                <Button
+                    android:id="@+id/btn_editprofile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:backgroundTint="@color/blueButton"
+                    android:text="Edit Profile"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+
+            </LinearLayout>
+            <!-- Logout Button -->
+            <Button
+>>>>>>> 6a40fd88519dd67f0e7fd5f87bac9476e374b033
                 android:id="@+id/btnLogout"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"

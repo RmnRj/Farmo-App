@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Save to: app/src/main/res/xml/file_provider_paths.xml -->
+<!-- REQUIRED for camera full-resolution photo capture -->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="kyc_photos" path="." />
+</paths>
