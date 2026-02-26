@@ -57,6 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finishAffinity();
         });
+
+        findViewById(R.id.btn_verification).setOnClickListener(v -> {
+            Intent intent = new Intent(this, KYCVerificationActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void fetchProfileData() {
